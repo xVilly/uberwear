@@ -13,13 +13,13 @@ class UserStatus(Enum):
 class User(Base):
     __tablename__ = "user"
 
-    User_ID = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    Name = Column(String(40))
-    Surname = Column(String(40))
-    Email = Column(String(255), unique=True, index=True)
-    Password = Column(String(255))
-    User_type = Column(Enum(UserType.Admin, UserType.Courier, UserType.Client))
-    Phone = Column(String(12))
-    Created_at = Column(Date())
-    Status = Column(Enum(UserStatus.Active, UserStatus.Inactive))
-    Last_login = Column(Date())
+    user_ID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column(String(40))
+    surname = Column(String(40))
+    email = Column(String(255), unique=True, index=True)
+    password = Column(String(255))
+    user_type = Column(Enum(UserType.Admin, UserType.Courier, UserType.Client))
+    phone = Column(String(12))
+    created_at = Column(Date())
+    status = Column(Enum(UserStatus.Active, UserStatus.Inactive))
+    last_login = Column(Date())

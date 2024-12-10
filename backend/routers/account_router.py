@@ -28,7 +28,7 @@ class UserLogin(BaseModel):
 # Endpoint /register - odpowiada za rejestracje użytkownika, w polach zapytania podajemy pola klasy UserCreate
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.Email == user.email).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(user.password)
@@ -56,11 +56,11 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid email or password")
     access_token_expires = timedelta(minutes=int(cfg().TOKEN_EXPIRATION_MINUTES))
     access_token = create_access_token(
-        data={"sub": db_user.Email}, expires_delta=access_token_expires
+        data={"sub": db_user.email}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Endpoint /user/me - zwraca informacje o zalogowanym użytkowniku
 @router.get("/user/me")
 def test(user: User = Depends(get_current_active_user)):
-    return {"message": f"You are logged in as a client {user.Email}"}
+    return {"message": f"You are logged in as a client {user.email}"}
