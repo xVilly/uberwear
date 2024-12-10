@@ -9,8 +9,10 @@ from utils.auth import (
 )
 from pydantic import BaseModel
 
+# Utworzenie instancji routera API
 router = APIRouter()
 
+# Klasa modelu danych dla endpointu /register - to co wpisujemy w formularzu
 class UserCreate(BaseModel):
     email: str
     password: str
@@ -18,10 +20,12 @@ class UserCreate(BaseModel):
     surname: str
     phone: str
 
+# Klasa modelu danych dla endpointu /login - to co wpisujemy w formularzu
 class UserLogin(BaseModel):
     email: str
     password: str
 
+# Endpoint /register - odpowiada za rejestracje użytkownika, w polach zapytania podajemy pola klasy UserCreate
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.Email == user.email).first()
@@ -44,6 +48,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return {"message": "User created successfully"}
 
+# Endpoint /login - odpowiada za logowanie użytkownika, w polach zapytania podajemy pola klasy UserLogin
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = authenticate_user(db, user.email, user.password)
@@ -55,6 +60,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+# Endpoint /user/me - zwraca informacje o zalogowanym użytkowniku
 @router.get("/user/me")
 def test(user: User = Depends(get_current_active_user)):
     return {"message": f"You are logged in as a client {user.Email}"}
