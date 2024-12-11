@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+from models.tables.admin import Admin
 from utils.config import cfg
 from utils.database import get_db
 from models.tables.user import User, UserType
@@ -35,6 +36,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def get_user(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
+
+def get_admin(db: Session, uid: int):
+    return db.query(Admin).filter(Admin.user_ID == uid).first()
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user(db, email)
@@ -68,7 +72,10 @@ def get_current_active_user(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-def get_current_active_admin(current_user: User = Depends(get_current_user)):
-    if current_user.User_type != UserType.Admin:
-        raise HTTPException(status_code=400, detail="Not enough permissions")
+def get_current_active_admin(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    if current_user.user_type != UserType.Admin:
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    admin = get_admin(db, current_user.user_ID)
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin role not found")
     return current_user
