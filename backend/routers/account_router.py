@@ -2,7 +2,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+from models.tables.address import Address
 from models.tables.admin import Admin
+from models.tables.client import Client
 from utils.config import cfg
 from utils.database import get_db
 from models.tables.user import User, UserType
@@ -16,11 +18,18 @@ router = APIRouter()
 
 # Klasa modelu danych dla endpointu /register - to co wpisujemy w formularzu
 class UserCreate(BaseModel):
+    # User Fields
     email: str
     password: str
     name: str
     surname: str
     phone: str
+    
+    # Address Fields
+    street: str
+    city: str
+    postcode: str
+
 
 # Klasa modelu danych dla endpointu /login - to co wpisujemy w formularzu
 class UserLogin(BaseModel):
@@ -49,13 +58,36 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         status="Active",
         last_login=datetime.now()
     )
-    # Add new user to database
+
+    new_address = Address(
+        street=user.street,
+        city=user.city,
+        postcode=user.postcode
+    )
+    # Add new address to database
+    db.add(new_address)
+    db.commit()
+    db.refresh(new_address)
+
+     # Add new user to database
     db.add(new_user)
     db.commit() # Save database changes
-    db.refresh(new_user) # Refresh the object to get the new ID
+    db.refresh(new_user)
+
+    new_client = Client(
+        user_ID=new_user.user_ID,
+        address_ID=new_address.address_ID
+    )
+    # Add new client to database
+    db.add(new_client)
+    db.commit()
+    db.refresh(new_client)
+
     return {
-        "message": "User created successfully",
-        "created_user_id": new_user.user_ID
+        "message": "Client user created successfully",
+        "created_user_id": new_user.user_ID,
+        "address_id": new_address.address_ID,
+        "client_id": new_client.client_ID
     }
 
 # Endpoint /login - odpowiada za logowanie użytkownika, w polach zapytania podajemy pola klasy UserLogin

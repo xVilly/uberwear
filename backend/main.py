@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from utils.config import cfg
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import account_router
+from routers import account_router, product_router, shop_router
 from fastapi.openapi.utils import get_openapi
 
 
@@ -28,6 +28,8 @@ app.add_middleware(
 def read_root():
     return {"app_name": cfg().APP_NAME}
 
-# Zaimportowanie routera z pliku routers/account_router.py
+# Zaimportowanie routera
 # i wszystkich endpointów z tego pliku
 app.include_router(account_router.router, tags=["Account"])
+app.include_router(shop_router.router, tags=["Shop"])
+app.include_router(product_router.router, tags=["Product"])
