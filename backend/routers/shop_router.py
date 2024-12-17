@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.product import Product
 from sqlalchemy.orm import Session
 
 from models.tables.address import Address
@@ -31,11 +32,21 @@ class ShopUpdate(BaseModel):
 @router.get("/shops")
 def get_shops(db: Session = Depends(get_db)):
     shops = db.query(Shop).all()
-    return shops
+    shops_list = [shop.__dict__.copy() for shop in shops]
+
+    for shop_dict in shops_list:
+        products_count = db.query(Product).filter(Product.shop_ID == shop_dict['shop_ID']).count()
+        shop_dict['products_count'] = products_count
+
+    return shops_list
 
 # Pobieranie sklepu po ID
 @router.get("/shop/{shop_id}")
-def get_shop(shop_id: int, expand_address: Optional[bool] = False, db: Session = Depends(get_db)):
+def get_shop(shop_id: int, 
+             expand_address: Optional[bool] = True, 
+             show_products: Optional[bool] = True,
+            db: Session = Depends(get_db)):
+    
     shop = db.query(Shop).filter(Shop.shop_ID == shop_id).first()
     if not shop:
         raise HTTPException(status_code=404, detail="Shop not found")
@@ -46,6 +57,11 @@ def get_shop(shop_id: int, expand_address: Optional[bool] = False, db: Session =
         if address:
             shop_dict['address'] = address.__dict__.copy()
     
+    if show_products:
+        products = db.query(Product).filter(Product.shop_ID == shop_id).all()
+        products_list = [product.__dict__.copy() for product in products]
+        shop_dict['products'] = products_list
+
     return shop_dict
    
 
