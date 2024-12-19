@@ -1,6 +1,8 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.user import User
+from utils.auth import get_current_active_client
 from models.tables.client import Client
 from models.tables.order import Order
 from utils.database import get_db
@@ -24,3 +26,17 @@ def get_orders_by_client(client_id: int, db: Session = Depends(get_db)):
         products_ordered = 1
 
     return orders_list
+
+
+class ProductInput(BaseModel):
+    id: list[int]
+    count: int
+
+class OrderInput(BaseModel):
+    products: list[ProductInput]
+
+# Utworzenie zamówienia - wymagany zalogowany client
+@router.post("/orders")
+def make_order(input: OrderInput, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_client)):
+    for product in input.products:
+        print(f"Product {product.id} x{product.count}")

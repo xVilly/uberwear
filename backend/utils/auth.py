@@ -4,10 +4,11 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from models.tables.client import Client
 from sqlalchemy.orm import Session
 from models.tables.admin import Admin
 from utils.config import cfg
-from utils.database import get_db
+from utils.database import get_db   
 from models.tables.user import User, UserType
 
 SECRET_KEY = cfg().AUTH_SECRET
@@ -40,6 +41,9 @@ def get_user(db: Session, email: str):
 def get_admin(db: Session, uid: int):
     return db.query(Admin).filter(Admin.user_ID == uid).first()
 
+def get_client(db: Session, uid: int):
+    return db.query(Client).filter(Client.user_ID == uid).first()
+
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user(db, email)
     if not user:
@@ -66,7 +70,7 @@ def get_current_user(db: Session = Depends(get_db), cretentials: HTTPAuthorizati
     if user is None:
         raise credentials_exception
     return user
-
+    
 def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.status != "Active":
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -77,5 +81,10 @@ def get_current_active_admin(db: Session = Depends(get_db), current_user: User =
         raise HTTPException(status_code=403, detail="Not enough permissions")
     admin = get_admin(db, current_user.user_ID)
     if not admin:
-        raise HTTPException(status_code=404, detail="Admin role not found")
+        raise HTTPException(status_code=403, detail="Admin role not found")
     return current_user
+
+def get_current_active_client(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    client = get_client(db, current_user.user_ID)
+    if not client:
+        raise HTTPException(status_code=403, detail="User is not a valid client")
