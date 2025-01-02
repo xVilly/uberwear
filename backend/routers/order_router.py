@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.product_order import ProductOrder
 from models.tables.user import User
 from utils.auth import get_current_active_client
 from models.tables.client import Client
@@ -23,7 +24,15 @@ def get_orders_by_client(client_id: int, db: Session = Depends(get_db)):
     orders_list = [orders.__dict__.copy() for order in orders]
 
     for order_dict in orders_list:
-        products_ordered = 1
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+        products_list = []
+        for product_ordered in products_ordered:
+            product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            products_list.append({
+                'product': product.__dict__.copy(),
+                'ordered_amount': product_ordered.product_amount
+            })
+        order_dict['products'] = products_list
 
     return orders_list
 

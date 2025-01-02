@@ -6,6 +6,7 @@ class Product(Base):
 
     product_ID = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(255))
+    amount = Column(Integer)
     price = Column(Double)
     category = Column(String(50))
     shop_ID = Column(Integer, index=True)

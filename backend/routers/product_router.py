@@ -18,6 +18,7 @@ class ProductCreate(BaseModel):
     name: str
     price: float
     category: str
+    amount: Optional[int] = 0
 
 # Pobieranie listy produktów z bazy
 @router.get("/products")
@@ -53,6 +54,7 @@ def add_product(shop_id: int, form: ProductCreate, db: Session = Depends(get_db)
     
     new_product = Product(
         name=form.name,
+        amount=form.amount if form.amount else 0,
         price=form.price,
         category=form.category,
         shop_ID=shop_id,
@@ -77,6 +79,9 @@ def update_product(product_id: int, form: ProductCreate, db: Session = Depends(g
     db_product.name = form.name
     db_product.price = form.price
     db_product.category = form.category
+    
+    if form.amount:
+        db_product.amount = form.amount
     
     db.commit()
     db.refresh(db_product)
