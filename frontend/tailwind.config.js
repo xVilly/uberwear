@@ -6,6 +6,10 @@ module.exports = {
         colors: {
           primary: 'var(--primary-color)',
           secondary: 'var(--secondary-color)',
+           brown: {
+          500: '#8B4513', // Medium brown
+          600: '#5F3610', // Darker brown
+        },
         }
       },
     },
