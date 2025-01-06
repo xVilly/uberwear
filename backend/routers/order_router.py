@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -47,5 +48,26 @@ class OrderInput(BaseModel):
 # Utworzenie zamówienia - wymagany zalogowany client
 @router.post("/orders")
 def make_order(input: OrderInput, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_client)):
+    ordered_products = []
+
     for product in input.products:
-        print(f"Product {product.id} x{product.count}")
+        print(f"Requested Product {product.id} x{product.count}")
+
+        db_product = db.query(Product).filter(Product.product_ID == product.id).first()
+        if not db_product:
+            raise HTTPException(status_code=404, detail=f"Product {product.id} not found")
+        
+        if db_product.amount < product.count:
+            raise HTTPException(status_code=400, detail=f"Not enough {db_product.name} in stock")
+        
+        ordered_products.append({
+            'product': db_product,
+            'count': product.count
+        })
+    
+    new_order = Order(
+        order_date=datetime.now(),
+        client_ID=current_user.user_ID,
+        status="Pending",
+        
+    )
