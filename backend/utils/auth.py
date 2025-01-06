@@ -88,3 +88,4 @@ def get_current_active_client(db: Session = Depends(get_db), current_user: User 
     client = get_client(db, current_user.user_ID)
     if not client:
         raise HTTPException(status_code=403, detail="User is not a valid client")
+    return client
