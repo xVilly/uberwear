@@ -1,15 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function CreateAccountPage() {
+export function LogInPage() {
   const navigate = useNavigate();
-//     navigate('/main');
 
-
-      {/* TODO- account creation validation*/}
-//   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-//   };
   return (
     <div
       style={{
@@ -31,7 +25,7 @@ export function CreateAccountPage() {
           fontSize: '36px',
         }}
       >
-        Zakupy szybko i w Twoim stylu - zacznij teraz.
+        Zakupy szybko i w Twoim stylu - zaloguj się.
       </h1>
 
       {/* Input Form */}
@@ -81,24 +75,6 @@ export function CreateAccountPage() {
           />
         </label>
 
-        {/* Confirm Password Field */}
-        <label style={{ fontSize: '18px' }}>
-          Powtórz Hasło:
-          <input
-            type="password"
-            placeholder="Wprowadź hasło jeszcze raz"
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginTop: '5px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-              fontSize: '16px',
-              color: '#000', // Set text color to black
-              backgroundColor: '#fff', // Ensure contrast with the text
-            }}
-          />
-        </label>
 
         {/* Submit Button */}
         <button
@@ -117,7 +93,7 @@ export function CreateAccountPage() {
 
            onClick={() => navigate("/account")}
         >
-         Utwórz Konto
+         Zaloguj się
         </button>
       </form>
     </div>
