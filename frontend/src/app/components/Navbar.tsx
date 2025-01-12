@@ -31,6 +31,29 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
         );
     };
 
+    const renderOffer = () => {
+    return (
+        <button
+            className="absolute top-4 right-24 cursor-pointer"
+            onClick={() => navigate('/offer')}
+            style={{
+                background: '#1E3A5F',
+                border: '2px solid #FFBF00',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '20px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease-in-out',
+            }}
+            onMouseEnter={(e) => (e.target as HTMLButtonElement).style.transform = 'scale(1.1)'}
+            onMouseLeave={(e) => (e.target as HTMLButtonElement).style.transform = 'scale(1)'}
+        >
+           Oferta
+        </button>
+    );
+};
+
     const renderLoginLabel = () => {
         //if (currentUserLoading) {
         if (false) {
@@ -94,7 +117,11 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
             </nav>
                 )
 
-            case '/account':
+            case '/account/data':
+            case '/account/orders':
+            case '/account/returns':
+            case '/account/points':
+            case '/account/favbrands':
             case '/cart':
                     return (
                 <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
@@ -115,6 +142,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
                                 </div>
                                 <div className="flex flex-row space-x-8 items-center">
                                 {renderCart()}
+                                {renderOffer()}
                             </div>
                             </div>
                         </div>

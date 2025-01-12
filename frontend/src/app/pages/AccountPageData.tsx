@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 type FormData = {
   Imię: string;
   Nazwisko: string;
+  Email: string;
   'Numer Telefonu': string;
   'Data Urodzenia': string;
   Hasło: string;
 };
 
-export function AccountPage() {
+export function AccountPageData() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
   const [formData, setFormData] = useState<FormData>({
     Imię: 'Jan',
     Nazwisko: 'Kowalski',
+    Email: 'jan.kowalski@example.com',
     'Numer Telefonu': '+48 123 456 789',
     'Data Urodzenia': '1990-01-01',
     Hasło: '********',
@@ -58,6 +61,7 @@ export function AccountPage() {
       }}
     >
       {/* Left Navigation Bar */}
+
       <nav
         style={{
           width: '250px',
@@ -74,20 +78,71 @@ export function AccountPage() {
             margin: 0,
           }}
         >
-          {['Twoje dane', 'Zamówienia', 'Zwroty', 'Punkty', 'Ulubione Marki'].map((item) => (
-            <li
-              key={item}
+          <li style={{ marginBottom: '15px' }}>
+            <Link
+              to="/account/data"
               style={{
-                marginBottom: '15px',
-                cursor: 'pointer',
+                textDecoration: 'none',
+                color: '#F3F4F6',
                 fontSize: '18px',
                 fontWeight: '500',
-                color: '#F3F4F6',
               }}
             >
-              {item}
-            </li>
-          ))}
+              Twoje dane
+            </Link>
+          </li>
+          <li style={{ marginBottom: '15px' }}>
+            <Link
+              to="/account/orders"
+              style={{
+                textDecoration: 'none',
+                color: '#F3F4F6',
+                fontSize: '18px',
+                fontWeight: '500',
+              }}
+            >
+              Zamówienia
+            </Link>
+          </li>
+          <li style={{ marginBottom: '15px' }}>
+            <Link
+              to="/account/returns"
+              style={{
+                textDecoration: 'none',
+                color: '#F3F4F6',
+                fontSize: '18px',
+                fontWeight: '500',
+              }}
+            >
+              Zwroty
+            </Link>
+          </li>
+          <li style={{ marginBottom: '15px' }}>
+            <Link
+              to="/account/points"
+              style={{
+                textDecoration: 'none',
+                color: '#F3F4F6',
+                fontSize: '18px',
+                fontWeight: '500',
+              }}
+            >
+              Punkty
+            </Link>
+          </li>
+          <li style={{ marginBottom: '15px' }}>
+            <Link
+              to="/account/favbrands"
+              style={{
+                textDecoration: 'none',
+                color: '#F3F4F6',
+                fontSize: '18px',
+                fontWeight: '500',
+              }}
+            >
+              Ulubione Marki
+            </Link>
+          </li>
         </ul>
       </nav>
 

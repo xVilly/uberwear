@@ -91,7 +91,7 @@ export function LogInPage() {
             marginTop: '10px',
           }}
 
-           onClick={() => navigate("/account")}
+           onClick={() => navigate("/account/data")}
         >
          Zaloguj się
         </button>
