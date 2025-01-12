@@ -7,6 +7,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from models.tables.client import Client
 from sqlalchemy.orm import Session
 from models.tables.admin import Admin
+from models.tables.courier import Courier
 from utils.config import cfg
 from utils.database import get_db   
 from models.tables.user import User, UserType
@@ -43,6 +44,9 @@ def get_admin(db: Session, uid: int):
 
 def get_client(db: Session, uid: int):
     return db.query(Client).filter(Client.user_ID == uid).first()
+
+def get_courier(db: Session, uid: int):
+    return db.query(Courier).filter(Courier.user_ID == uid).first()
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user(db, email)
@@ -89,3 +93,9 @@ def get_current_active_client(db: Session = Depends(get_db), current_user: User 
     if not client:
         raise HTTPException(status_code=403, detail="User is not a valid client")
     return client
+
+def get_current_active_courier(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    courier = get_courier(db, current_user.user_ID)
+    if not courier:
+        raise HTTPException(status_code=403, detail="User is not a valid courier")
+    return courier

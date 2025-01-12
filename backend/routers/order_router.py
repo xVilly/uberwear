@@ -9,7 +9,7 @@ from models.tables.payment import Payment
 from models.tables.product_order import ProductOrder
 from models.tables.shop import Shop
 from models.tables.user import User, UserType
-from utils.auth import get_current_active_admin, get_current_active_client, get_current_active_user
+from utils.auth import get_current_active_admin, get_current_active_client, get_current_active_courier, get_current_active_user
 from models.tables.client import Client
 from models.tables.order import Order
 from utils.database import get_db
@@ -353,4 +353,25 @@ def delete_order(order_id: int, db: Session = Depends(get_db), current_user: Use
     return {
         "message": "Order deleted successfully",
         "order_id": order_id
+    }
+
+@router.patch("/orders/{order_id}/deliver")
+def deliver_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_courier)):
+
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if db_order.status != "Shipped":
+        raise HTTPException(status_code=400, detail="Order not shipped yet")
+    
+    db_order.status = "Delivered"
+    db.commit()
+
+    return {
+        "message": "Order delivered successfully",
+        "order": {
+            "id": db_order.order_ID,
+            "status": db_order.status
+        }
     }
