@@ -1,6 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+type FormData = {
+  Imię: string;
+  Nazwisko: string;
+  'Numer Telefonu': string;
+  'Data Urodzenia': string;
+  Hasło: string;
+};
 
 export function AccountPage() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
+  const [formData, setFormData] = useState<FormData>({
+    Imię: 'Jan',
+    Nazwisko: 'Kowalski',
+    'Numer Telefonu': '+48 123 456 789',
+    'Data Urodzenia': '1990-01-01',
+    Hasło: '********',
+  });
+
+  // Open popup
+  const handleEditClick = (field: keyof FormData) => {
+    setCurrentField(field);
+    setIsPopupOpen(true);
+  };
+
+  // Close popup
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setCurrentField(null);
+  };
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (currentField) {
+      setFormData({
+        ...formData,
+        [currentField]: e.target.value,
+      });
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    closePopup();
+  };
+
   return (
     <div
       style={{
@@ -56,23 +102,163 @@ export function AccountPage() {
         <h1
           style={{
             fontSize: '36px',
-            marginBottom: '10px',
+            marginBottom: '30px',
             position: 'relative',
             fontWeight: 'bold',
           }}
         >
-          Twoje konto
+          Twoje dane
           <span
             style={{
               position: 'absolute',
               left: 0,
-              bottom: 0,
+              bottom: -10,
               width: '100%',
-              height: '3px', // Height of the line
-              backgroundColor: 'rgba(255, 193, 7, 0.8)', // Amber color with opacity
+              height: '3px',
+              backgroundColor: 'rgba(255, 193, 7, 0.8)',
             }}
           ></span>
         </h1>
+
+        {/* Data Fields */}
+        {Object.entries(formData).map(([field, value]) => (
+          <div
+            key={field}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              border: '2px solid #FFBF00',
+              borderRadius: '5px',
+              padding: '15px 20px',
+              marginBottom: '20px',
+              backgroundColor: '#1E3A5F',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '18px',
+                fontWeight: '500',
+                color: 'white',
+              }}
+            >
+              <strong>{field}:</strong> {value}
+            </div>
+            <button
+              style={{
+                padding: '10px',
+                borderRadius: '5px',
+                background: '#1E3A5F',
+                color: 'white',
+                fontWeight: 'bold',
+                border: '2px solid #FFBF00',
+                fontSize: '16px',
+                cursor: 'pointer',
+              }}
+              onClick={() => handleEditClick(field as keyof FormData)}
+            >
+              Edytuj
+            </button>
+          </div>
+        ))}
+
+        {/* Popup Window */}
+        {isPopupOpen && currentField && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '10px',
+                padding: '20px',
+                width: '400px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+              }}
+            >
+              <h2
+                style={{
+                  marginBottom: '20px',
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#1E3A5F',
+                }}
+              >
+                Edytuj {currentField}
+              </h2>
+              <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: '20px' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      marginBottom: '10px',
+                      fontSize: '16px',
+                      fontWeight: '500',
+                    }}
+                  >
+                    Nowa wartość:
+                  </label>
+                  <input
+                    type={currentField === 'Hasło' ? 'password' : 'text'}
+                    value={formData[currentField]}
+                    onChange={handleChange}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      border: '2px solid #FFBF00',
+                      fontSize: '16px',
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    type="button"
+                    onClick={closePopup}
+                    style={{
+                      padding: '10px 15px',
+                      borderRadius: '5px',
+                      background: '#FF4B4B',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      border: 'none',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Anuluj
+                  </button>
+                  <button
+                    type="submit"
+                    style={{
+                      padding: '10px 15px',
+                      borderRadius: '5px',
+                      background: '#1E3A5F',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      border: 'none',
+                      fontSize: '16px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Zapisz
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

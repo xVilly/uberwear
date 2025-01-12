@@ -95,6 +95,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
                 )
 
             case '/account':
+            case '/cart':
                     return (
                 <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
                 <div
