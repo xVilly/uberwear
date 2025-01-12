@@ -4,7 +4,7 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 
-from routers import order_router
+from routers import admin_router, order_router
 from utils.config import cfg
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,3 +35,4 @@ app.include_router(account_router.router, tags=["Account"])
 app.include_router(shop_router.router, tags=["Shop"])
 app.include_router(product_router.router, tags=["Product"])
 app.include_router(order_router.router, tags=["Order"])
+app.include_router(admin_router.router, tags=["Admin Tools"])

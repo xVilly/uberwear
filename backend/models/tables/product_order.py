@@ -6,4 +6,4 @@ class ProductOrder(Base):
 
     product_ID = Column(Integer, primary_key=True, index=True)
     order_ID = Column(Integer, primary_key=True, index=True)
-    product_amount = Column(Integer)
+    amount = Column(Integer)

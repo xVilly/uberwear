@@ -3,10 +3,11 @@ import json
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.courier import Courier
 from models.tables.payment import Payment
 from models.tables.product_order import ProductOrder
 from models.tables.user import User
-from utils.auth import get_current_active_client
+from utils.auth import get_current_active_admin, get_current_active_client, get_current_active_user
 from models.tables.client import Client
 from models.tables.order import Order
 from utils.database import get_db
@@ -20,13 +21,16 @@ router = APIRouter()
 
 # Pobieranie listy zamówień z bazy dla danego klienta
 @router.get("/client/{client_id}/orders")
-def get_orders_by_client(client_id: int, db: Session = Depends(get_db)):
+def get_orders_by_client(client_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_client = db.query(Client).filter(Client.client_ID == client_id).first()
     if not db_client:
         raise HTTPException(status_code=404, detail="Client not found")
     
+    if current_user.user_type != "admin" and db_client.user_ID != current_user.user_ID:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
     orders = db.query(Order).filter(Order.client_ID == client_id).all()
-    orders_list = [orders.__dict__.copy() for order in orders]
+    orders_list = [order.__dict__.copy() for order in orders]
 
     for order_dict in orders_list:
         products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
@@ -35,12 +39,55 @@ def get_orders_by_client(client_id: int, db: Session = Depends(get_db)):
             product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
             products_list.append({
                 'product': product.__dict__.copy(),
-                'ordered_amount': product_ordered.product_amount
+                'ordered_amount': product_ordered.amount
             })
         order_dict['products'] = products_list
 
     return orders_list
 
+@router.get("/courier/{courier_id}/orders")
+def get_orders_by_courier(courier_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    db_courier = db.query(Courier).filter(Courier.courier_ID == courier_id).first()
+    if not db_courier:
+        raise HTTPException(status_code=404, detail="Courier not found")
+    
+    if current_user.user_type != "admin" and db_courier.user_ID != current_user.user_ID:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    orders = db.query(Order).filter(Order.courier_ID == courier_id).all()
+    orders_list = [order.__dict__.copy() for order in orders]
+
+    for order_dict in orders_list:
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+        products_list = []
+        for product_ordered in products_ordered:
+            product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            products_list.append({
+                'product': product.__dict__.copy(),
+                'ordered_amount': product_ordered.amount
+            })
+        order_dict['products'] = products_list
+
+    return orders_list
+
+
+@router.get("/orders")
+def get_all_orders(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_admin)):
+    orders = db.query(Order).all()
+    orders_list = [order.__dict__.copy() for order in orders]
+
+    for order_dict in orders_list:
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+        products_list = []
+        for product_ordered in products_ordered:
+            product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            products_list.append({
+                'product': product.__dict__.copy(),
+                'ordered_amount': product_ordered.amount
+            })
+        order_dict['products'] = products_list
+
+    return orders_list
 
 class ProductInput(BaseModel):
     id: int
@@ -98,6 +145,15 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
     db.commit()
     db.refresh(new_order)
 
+    for product in ordered_products:
+        new_product_order = ProductOrder(
+            order_ID=new_order.order_ID,
+            product_ID=product['product']['product_ID'],
+            amount=product['count']
+        )
+        db.add(new_product_order)
+        db.commit()
+
     return {
         "message": "Order created successfully - awaiting payment",
         "created_order_id": new_order.order_ID,
@@ -107,4 +163,78 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
             "method": new_payment.payment_method
         },
         "ordered_products": ordered_products,
+    }
+
+@router.put("/orders/{order_id}/pay")
+def pay_order(order_id: int, db: Session = Depends(get_db), current_client: Client = Depends(get_current_active_client)):
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if db_order.status != "Pending":
+        raise HTTPException(status_code=400, detail="Order already paid")
+    
+    db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    db_payment.status = "Done"
+    db.commit()
+
+    db_order.status = "Shipped"
+    db.commit()
+
+    return {
+        "message": "Order paid successfully",
+        "order": {
+            "id": db_order.order_ID,
+            "status": db_order.status
+        }
+    }
+
+@router.put("/orders/{order_id}/cancel")
+def cancel_order(order_id: int, 
+                 db: Session = Depends(get_db), 
+                 current_client: Client = Depends(get_current_active_client),
+                 current_user: User = Depends(get_current_active_user)):
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if current_user.user_type != "admin" and db_order.client_ID != current_client.client_ID:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    if db_order.status == "Canceled":
+        raise HTTPException(status_code=400, detail="Order already canceled")
+    
+    if db_order.status != "Pending":
+        raise HTTPException(status_code=400, detail="Order already paid and cannot be cancelled")
+    
+    db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    db_payment.status = "Canceled"
+    db.commit()
+
+    db_order.status = "Canceled"
+    db.commit()
+
+    return {
+        "message": "Order canceled successfully",
+        "order": {
+            "id": db_order.order_ID,
+            "status": db_order.status
+        }
+    }
+
+@router.delete("/orders/{order_id}")
+def delete_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_admin)):
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    db.query(ProductOrder).filter(ProductOrder.order_ID == order_id).delete()
+    db.delete(db_payment)
+    db.delete(db_order)
+    db.commit()
+
+    return {
+        "message": "Order deleted successfully",
+        "order_id": order_id
     }
