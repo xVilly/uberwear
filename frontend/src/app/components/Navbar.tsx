@@ -2,14 +2,16 @@ import { useQuery } from '@tanstack/react-query';
 import Logo from '../../images/clothes_logo.png';
 import Cart from '../../images/cart_icon.png'
 // import { parseCurrentUser } from '../../auth/logic';
-import { setUserDataThunk, setUserGroupThunk, UserData } from '../redux/userSlice';
+import { setUserDataThunk, setUserGroup, setUserGroupThunk, UserData } from '../redux/userSlice';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
+ 
 
 
 function Navbar({userGroup, userData} : {userGroup: string, userData: UserData}) {
 
+    userGroup = 'Courier';
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -80,13 +82,34 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
             )
         } else {
             return (
-                <div className="font-light text-2xl cursor-pointer" onClick={()=>navigate('/gate/login')}>
+                <div className="font-light text-2xl cursor-pointer" onClick={() => userGroup === 'admin' ? navigate('/admin') : navigate('/account/data')}>
                     Witaj, {userData.name}
                 </div>
             )
         }
     }
-       const renderNavbarContent = () => {
+
+    const renderAdminButton = () => {
+        if (userGroup === 'Admin') {
+            return (
+                <button className="bg-[#1E3A5F] text-white font-playfair py-2 px-4 rounded-full shadow-md text-xl" onClick={() => navigate('/admin')}>
+                    Admin Panel
+                </button>
+            );
+        }
+    }
+
+    const renderCourierButton = () => {
+        if (userGroup === 'Courier') {
+            return (
+                <button className="bg-[#1E3A5F] text-white font-playfair py-2 px-4 rounded-full shadow-md text-xl" onClick={() => navigate('/courier')}>
+                    Courier Panel
+                </button>
+            );
+        }
+    }
+
+    const renderNavbarContent = () => {
         switch (location.pathname) {
             case '/login':
                  return (
@@ -143,6 +166,8 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
                                 <div className="flex flex-row space-x-8 items-center">
                                 {renderCart()}
                                 {renderOffer()}
+                                {renderAdminButton()}
+                                {renderCourierButton()}
                             </div>
                             </div>
                         </div>
