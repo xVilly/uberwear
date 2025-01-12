@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from models.tables.client import Client
-from models.tables.user import User
+from models.tables.courier import Courier
+from models.tables.user import User, UserType
 from utils.auth import get_current_active_admin
 from utils.database import get_db
 
@@ -43,3 +45,86 @@ def get_clients(
         return_data.append(client)
     
     return return_data
+
+@router.get("/admin/couriers")
+def get_couriers(
+    start_index: int = 0,
+    limit: int = 50,
+    db: Session = Depends(get_db), 
+    user: User = Depends(get_current_active_admin)):
+
+    courier_users = db.query(User).filter(User.user_type == "Courier").offset(start_index).limit(limit).all()
+
+    couriers_data = []
+
+    for user in courier_users:
+        user.courier = db.query(Courier).filter(Courier.user_ID == user.user_ID).first()
+        couriers_data.append(user.__dict__)
+    
+    return_data = []
+
+    for courier_data in couriers_data:
+        courier = {
+            "courier_ID": courier_data['courier'].courier_ID,
+            "user_ID": courier_data['user_ID'],
+            "name": courier_data['name'],
+            "surname": courier_data['surname'],
+            "email": courier_data['email'],
+            "phone": courier_data['phone'],
+            "created_at": courier_data['created_at'],
+            "status": courier_data['status'],
+            "last_login": courier_data['last_login'],
+            "delivery_transport": courier_data['courier'].delivery_transport,
+            "license_plate": courier_data['courier'].license_plate
+        }
+
+        return_data.append(courier)
+    
+    return return_data
+
+class CreateCourier(BaseModel):
+    delivery_transport: str
+    license_plate: str
+
+@router.post("/admin/{user_id}/courier")
+def assign_courier(user_id: int, courier_data: CreateCourier, 
+                   db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    user = db.query(User).filter(User.user_ID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    
+    if user.user_type != UserType.Courier:
+        user.user_type = UserType.Courier
+        db.commit()
+
+    courier = db.query(Courier).filter(Courier.user_ID == user_id).first()
+    if courier:
+        raise HTTPException(status_code=400, detail="Courier already exists for this user")
+    
+    new_courier = Courier(
+        user_ID=user_id, 
+        delivery_transport=courier_data.delivery_transport, 
+        license_plate=courier_data.license_plate)
+    db.add(new_courier)
+    db.commit()
+    db.refresh(new_courier)
+
+    return {"detail": "Courier assigned", "courier_id": new_courier.courier_ID}
+
+@router.delete("/admin/{user_id}/courier")
+def remove_courier(user_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    user = db.query(User).filter(User.user_ID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    if user.user_type == UserType.Courier:
+        user.user_type = UserType.Client
+        db.commit()
+
+    courier = db.query(Courier).filter(Courier.user_ID == user_id).first()
+    if not courier:
+        raise HTTPException(status_code=400, detail="Courier does not exist for this user")
+    
+    db.delete(courier)
+    db.commit()
+
+    return {"detail": "Courier removed"}

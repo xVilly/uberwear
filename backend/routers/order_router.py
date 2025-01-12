@@ -3,10 +3,12 @@ import json
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.address import Address
 from models.tables.courier import Courier
 from models.tables.payment import Payment
 from models.tables.product_order import ProductOrder
-from models.tables.user import User
+from models.tables.shop import Shop
+from models.tables.user import User, UserType
 from utils.auth import get_current_active_admin, get_current_active_client, get_current_active_user
 from models.tables.client import Client
 from models.tables.order import Order
@@ -30,20 +32,56 @@ def get_orders_by_client(client_id: int, db: Session = Depends(get_db), current_
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     orders = db.query(Order).filter(Order.client_ID == client_id).all()
-    orders_list = [order.__dict__.copy() for order in orders]
 
-    for order_dict in orders_list:
-        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+    return_list = []
+
+    for order in orders:
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order.order_ID).all()
+        order_payment = db.query(Payment).filter(Payment.payment_ID == order.payment_ID).first()
+        order_courier = db.query(Courier).filter(Courier.courier_ID == order.courier_ID).first()
+        courier_user = db.query(User).filter(User.user_ID == order_courier.user_ID).first()
+        order_address = db.query(Address).filter(Address.address_ID == order.address_ID).first()
         products_list = []
         for product_ordered in products_ordered:
             product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            shop = db.query(Shop).filter(Shop.shop_ID == product.shop_ID).first()
             products_list.append({
-                'product': product.__dict__.copy(),
+                'product': {
+                    'id': product.product_ID,
+                    'name': product.name,
+                    'price': product.price,
+                    'shop': {
+                        'id': shop.shop_ID,
+                        'name': shop.name
+                    }
+                },
                 'ordered_amount': product_ordered.amount
             })
-        order_dict['products'] = products_list
+        return_list.append({
+            'id': order.order_ID,
+            'date': order.order_date,
+            'status': order.status,
+            'payment': {
+                'id': order_payment.payment_ID,
+                'status': order_payment.status,
+                'method': order_payment.payment_method
+            },
+            'address': {
+                'street': order_address.street,
+                'city': order_address.city,
+                'postcode': order_address.postcode
+            },
+            'courier': {
+                'id': order_courier.courier_ID,
+                'name': courier_user.name,
+                'surname': courier_user.surname,
+                'delivery_transport': order_courier.delivery_transport,
+                'license_plate': order_courier.license_plate
+            },
+            'products': products_list,
+        })
 
-    return orders_list
+    return return_list
 
 @router.get("/courier/{courier_id}/orders")
 def get_orders_by_courier(courier_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
@@ -51,43 +89,121 @@ def get_orders_by_courier(courier_id: int, db: Session = Depends(get_db), curren
     if not db_courier:
         raise HTTPException(status_code=404, detail="Courier not found")
     
-    if current_user.user_type != "admin" and db_courier.user_ID != current_user.user_ID:
+    if current_user.user_type != UserType.Admin and db_courier.user_ID != current_user.user_ID:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     orders = db.query(Order).filter(Order.courier_ID == courier_id).all()
-    orders_list = [order.__dict__.copy() for order in orders]
 
-    for order_dict in orders_list:
-        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+    return_list = []
+
+    for order in orders:
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order.order_ID).all()
+        order_client = db.query(Client).filter(Client.client_ID == order.client_ID).first()
+        client_user = db.query(User).filter(User.user_ID == order_client.user_ID).first()
+        order_payment = db.query(Payment).filter(Payment.payment_ID == order.payment_ID).first()
+        order_courier = db.query(Courier).filter(Courier.courier_ID == order.courier_ID).first()
+        order_address = db.query(Address).filter(Address.address_ID == order.address_ID).first()
         products_list = []
         for product_ordered in products_ordered:
             product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            shop = db.query(Shop).filter(Shop.shop_ID == product.shop_ID).first()
             products_list.append({
-                'product': product.__dict__.copy(),
+                'product': {
+                    'id': product.product_ID,
+                    'name': product.name,
+                    'price': product.price,
+                    'shop': {
+                        'id': shop.shop_ID,
+                        'name': shop.name
+                    }
+                },
                 'ordered_amount': product_ordered.amount
             })
-        order_dict['products'] = products_list
+        return_list.append({
+            'id': order.order_ID,
+            'date': order.order_date,
+            'status': order.status,
+            'client': {
+                'id': order_client.client_ID,
+                'name': client_user.name,
+                'surname': client_user.surname
+            },
+            'payment': {
+                'id': order_payment.payment_ID,
+                'status': order_payment.status,
+                'method': order_payment.payment_method
+            },
+            'address': {
+                'street': order_address.street,
+                'city': order_address.city,
+                'postcode': order_address.postcode
+            },
+            'products': products_list,
+        })
 
-    return orders_list
+    return return_list
 
 
 @router.get("/orders")
 def get_all_orders(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_admin)):
     orders = db.query(Order).all()
-    orders_list = [order.__dict__.copy() for order in orders]
 
-    for order_dict in orders_list:
-        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_dict['order_ID']).all()
+    return_list = []
+
+    for order in orders:
+        products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order.order_ID).all()
+        order_client = db.query(Client).filter(Client.client_ID == order.client_ID).first()
+        client_user = db.query(User).filter(User.user_ID == order_client.user_ID).first()
+        order_payment = db.query(Payment).filter(Payment.payment_ID == order.payment_ID).first()
+        order_courier = db.query(Courier).filter(Courier.courier_ID == order.courier_ID).first()
+        courier_user = db.query(User).filter(User.user_ID == order_courier.user_ID).first()
+        order_address = db.query(Address).filter(Address.address_ID == order.address_ID).first()
         products_list = []
         for product_ordered in products_ordered:
             product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+            shop = db.query(Shop).filter(Shop.shop_ID == product.shop_ID).first()
             products_list.append({
-                'product': product.__dict__.copy(),
+                'product': {
+                    'id': product.product_ID,
+                    'name': product.name,
+                    'price': product.price,
+                    'shop': {
+                        'id': shop.shop_ID,
+                        'name': shop.name
+                    }
+                },
                 'ordered_amount': product_ordered.amount
             })
-        order_dict['products'] = products_list
+        return_list.append({
+            'id': order.order_ID,
+            'date': order.order_date,
+            'status': order.status,
+            'client': {
+                'id': order_client.client_ID,
+                'name': client_user.name,
+                'surname': client_user.surname
+            },
+            'payment': {
+                'id': order_payment.payment_ID,
+                'status': order_payment.status,
+                'method': order_payment.payment_method
+            },
+            'address': {
+                'street': order_address.street,
+                'city': order_address.city,
+                'postcode': order_address.postcode
+            },
+            'courier': {
+                'id': order_courier.courier_ID,
+                'name': courier_user.name,
+                'surname': courier_user.surname,
+                'delivery_transport': order_courier.delivery_transport,
+                'license_plate': order_courier.license_plate
+            },
+            'products': products_list,
+        })
 
-    return orders_list
+    return return_list
 
 class ProductInput(BaseModel):
     id: int
