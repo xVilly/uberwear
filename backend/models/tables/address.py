@@ -9,3 +9,4 @@ class Address(Base):
     street = Column(String(128))
     city = Column(String(50))
     postcode = Column(String(6))
+    district = Column(String(50))

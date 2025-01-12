@@ -29,6 +29,8 @@ class UserCreate(BaseModel):
     street: str
     city: str
     postcode: str
+    district: Optional[str] = "None"
+    
 
 
 # Klasa modelu danych dla endpointu /login - to co wpisujemy w formularzu
@@ -62,7 +64,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     new_address = Address(
         street=user.street,
         city=user.city,
-        postcode=user.postcode
+        postcode=user.postcode,
+        district=user.district
+        
     )
     # Add new address to database
     db.add(new_address)

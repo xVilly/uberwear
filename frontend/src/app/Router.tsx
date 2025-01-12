@@ -11,6 +11,11 @@ import { AccountPageFavBrands} from "./pages/AccountPageFavBrands";
 import { LogInPage} from "./pages/LogIn";
 import { OfferPage} from "./pages/Offer";
 import { CartPage} from "./pages/Cart";
+import { AdminPanelPage } from "./pages/AdminPanel";
+import {AdminCouriers} from "./pages/AdminCouriers";
+import {AdminOrders} from "./pages/AdminOrders";
+import {AdminUsers} from "./pages/AdminUsers";
+import { CourierPanelPage } from "./pages/CourierPanel";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -25,8 +30,11 @@ const routes = createBrowserRouter(
       <Route path="login" element={<LogInPage/>} />
       <Route path="cart" element={<CartPage/>} />
       <Route path="offer" element={<OfferPage/>} />
-
-
+      <Route path="admin" element={<AdminPanelPage />} />
+      <Route path="admin/couriers" element={<AdminCouriers />} />
+      <Route path="admin/orders" element={<AdminOrders />} />
+      <Route path="admin/users" element={<AdminUsers />} />
+      <Route path="courier" element={<CourierPanelPage />} />
     </Route>
   )
 );
