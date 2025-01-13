@@ -8,7 +8,6 @@ import { AccountPageOrders} from "./pages/AccountPageOrders";
 import { AccountPageReturns} from "./pages/AccountPageReturns";
 import { AccountPagePoints} from "./pages/AccountPagePoints";
 import { AccountPageFavBrands} from "./pages/AccountPageFavBrands";
-import { LogInPage} from "./pages/LogIn";
 import { OfferPage} from "./pages/Offer";
 import { CartPage} from "./pages/Cart";
 import { AdminPanelPage } from "./pages/AdminPanel";
@@ -17,6 +16,7 @@ import {AdminOrders} from "./pages/AdminOrders";
 import {AdminUsers} from "./pages/AdminUsers";
 import { CourierPanelPage } from "./pages/CourierPanel";
 import {AdminData} from "./pages/AdminData";
+import LogInPage from "./pages/LogIn";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(

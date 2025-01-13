@@ -2,14 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import Logo from '../../images/clothes_logo.png';
 import Cart from '../../images/cart_icon.png'
 // import { parseCurrentUser } from '../../auth/logic';
-import { setUserDataThunk, setUserGroup, setUserGroupThunk, UserData } from '../redux/userSlice';
+import { setUserDataThunk, UserData } from '../redux/userSlice';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
  
 
 
-function Navbar({userGroup, userData} : {userGroup: string, userData: UserData}) {
+function Navbar({userData} : {userData: UserData}) {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -64,7 +64,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
                 </div>
             )
         }
-        if (userGroup.length < 1 || userData.name.length < 1) {
+        if (userData.type.length < 1 || userData.name.length < 1) {
             return (
                 <button className= "bg-[#1E3A5F] text-white font-playfair py-2 px-4 rounded-full shadow-md text-xl absolute"  onClick={()=>navigate('/login')}
 
@@ -81,7 +81,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
             )
         } else {
             return (
-                <div className="font-light text-2xl cursor-pointer" onClick={() => userGroup === 'Admin' ? navigate('/admin') : navigate('/account/data')}>
+                <div className="font-light text-2xl cursor-pointer" onClick={() => userData.type === 'Admin' ? navigate('/admin') : navigate('/account/data')}>
                     Witaj, {userData.name}
                 </div>
             )
@@ -89,7 +89,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
     }
 
     const renderAdminButton = () => {
-        if (userGroup === 'Admin') {
+        if (userData.type === 'Admin') {
             return (
                 <button className="bg-[#1E3A5F] text-white font-playfair py-2 px-4 rounded-full shadow-md text-xl" onClick={() => navigate('/admin')}>
                     Admin Panel
@@ -99,7 +99,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
     }
 
     const renderCourierButton = () => {
-        if (userGroup === 'Courier') {
+        if (userData.type === 'Courier') {
             return (
                 <button className="bg-[#1E3A5F] text-white font-playfair py-2 px-4 rounded-full shadow-md text-xl" onClick={() => navigate('/courier')}>
                     Courier Panel
@@ -221,12 +221,10 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
 
 }
 
-const mapStateToProps = (state: RootState) => ({ userGroup: state.user.group, userData: state.user.user });
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        setUserGroup: (role: string) =>
-            dispatch(setUserGroupThunk(role)),
         setUserData: (data: UserData) =>
             dispatch(setUserDataThunk(data))
     };

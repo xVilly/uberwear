@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setAccessToken, setUserDataThunk, UserData } from '../redux/userSlice';
+import { AppDispatch, RootState } from '../store/mainStore';
 
-export function LogInPage() {
+interface Props {
+  accessToken: string | null;
+  userData: UserData;
+  setAccessToken: (token: string) => void;
+  setUserData: (data: UserData) => void;
+}
+
+function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +31,7 @@ export function LogInPage() {
       if (data.access_token) {
         // Save the token in local storage or context
         localStorage.setItem('token', data.access_token);
+        setAccessToken(data.access_token);
         const response2 = await fetch('http://localhost:8000/user/me', {
           method: 'GET',
           headers: {
@@ -29,6 +40,12 @@ export function LogInPage() {
           },
         });
         const userInfo = await response2.json();
+        setUserData({
+          type: userInfo.user.user_type,
+          name: userInfo.user.name,
+          lastname: userInfo.user.surname,
+          email: userInfo.user.email
+        });
         //localStorage.setItem('user', JSON.stringify(userInfo));
         
         if (userInfo.user.user_type === 'Admin') {
@@ -141,3 +158,18 @@ export function LogInPage() {
     </div>
   );
 }
+
+
+
+const mapStateToProps = (state: RootState) => ({ accessToken: state.user.accessToken, userData: state.user.user });
+
+function mapDispatchToProps(dispatch: AppDispatch) {
+    return {
+        setAccessToken: (token: string) =>
+            dispatch(setAccessToken(token)),
+        setUserData: (data: UserData) =>
+            dispatch(setUserDataThunk(data))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogInPage);
