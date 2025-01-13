@@ -1,4 +1,9 @@
-export const loginRequest = async (email: string, password: string) => {
+import { UserData } from "./redux/userSlice";
+
+export const loginRequest = async (email: string, 
+  password: string, 
+  setAccessToken: (token: string) => void
+) => {
   const response = await fetch('http://localhost:8000/login', {
     method: 'POST',
     headers: {
@@ -9,7 +14,7 @@ export const loginRequest = async (email: string, password: string) => {
   });
   const data = await response.json();
   if (data.access_token) {
-    localStorage.setItem('token', data.access_token);
+    setAccessToken(data.access_token);
   }
   return data;
 };

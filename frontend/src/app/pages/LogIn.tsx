@@ -20,10 +20,17 @@ function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const data = await loginRequest(email, password);
+      const data = await loginRequest(email, password, setAccessToken);
       if (data.access_token) {
         const userInfo = await getUserInfo();
         
+        setUserData({
+          type: userInfo.user.user_type,
+          name: userInfo.user.name,
+          lastname: userInfo.user.surname,
+          email: userInfo.user.email
+        });
+
         if (userInfo.user.user_type === 'Admin') {
           navigate("/admin");
         } else if (userInfo.user.user_type === 'Courier') {

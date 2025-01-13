@@ -12,7 +12,7 @@ export interface UserData {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    accessToken: (typeof document !== 'undefined' ? localStorage.getItem('access-token') : ""),
+    accessToken: (typeof document !== 'undefined' ? localStorage.getItem('token') : ""),
     user: {
       type: (typeof document !== 'undefined' ? parseCookie('userType') : ""),
       name: (typeof document !== 'undefined' ? parseCookie('userFirstName') : ""),
@@ -50,7 +50,7 @@ export function setAccessTokenThunk(
   token: string,
 ): ThunkAction<void, RootState, unknown, Action> {
   return async function setTokenThunk(dispatch) {
-    localStorage.setItem('access-token', token);
+    localStorage.setItem('token', token);
     dispatch(setAccessToken(token));
   };
 }
