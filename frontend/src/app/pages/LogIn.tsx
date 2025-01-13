@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginRequest, getUserInfo } from '../requests';
 
 export function LogInPage() {
   const navigate = useNavigate();
@@ -9,27 +10,9 @@ export function LogInPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/login', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
+      const data = await loginRequest(email, password);
       if (data.access_token) {
-        // Save the token in local storage or context
-        localStorage.setItem('token', data.access_token);
-        const response2 = await fetch('http://localhost:8000/user/me', {
-          method: 'GET',
-          headers: {
-            'accept': 'application/json',
-            'Authorization': `Bearer ${data.access_token}`,
-          },
-        });
-        const userInfo = await response2.json();
-        //localStorage.setItem('user', JSON.stringify(userInfo));
+        const userInfo = await getUserInfo();
         
         if (userInfo.user.user_type === 'Admin') {
           navigate("/admin");
