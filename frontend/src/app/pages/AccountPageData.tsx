@@ -25,16 +25,18 @@ function AccountPageData({userData}: {userData: UserData}) {
   });
 
   useEffect(() => {
+    console.log("test");
     const fetchUserInfo = async () => {
       try {
         const userInfo = await getUserInfo(userData.access);
         setFormData({
-          Imię: userInfo.name,
-          Nazwisko: userInfo.surname,
-          Email: userInfo.email,
-          'Numer Telefonu': userInfo.phone,
+          Imię: userInfo.user.name,
+          Nazwisko: userInfo.user.surname,
+          Email: userInfo.user.email,
+          'Numer Telefonu': userInfo.user.phone,
           Hasło: '********',
         });
+        console.log(userInfo);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
       }
@@ -348,4 +350,4 @@ function AccountPageData({userData}: {userData: UserData}) {
 const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
 
 
-export default connect(mapStateToProps)(AdminData);
+export default connect(mapStateToProps)(AccountPageData);
