@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginRequest, getUserInfo } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
-import { setAccessToken, setUserDataThunk, UserData } from '../redux/userSlice';
+import { setUserDataThunk, UserData } from '../redux/userSlice';
 
 interface Props {
   userData: UserData;

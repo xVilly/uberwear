@@ -7,21 +7,24 @@ import { AppDispatch, RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
  
+interface Props {
+    userData: UserData;
+    setUserData(data: UserData): void;
+};
 
-
-function Navbar({userData} : {userData: UserData}) {
-
+function Navbar({ userData, setUserData }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // const { isLoading: currentUserLoading } = useQuery<{ result: boolean }>({
-    //     queryKey: ["currentUser"],
-    //     queryFn: parseCurrentUser,
-    //     retry: false,
-    //     retryOnMount: false,
-    //     enabled: true,
-    //     staleTime: 60000
-    // })
+    const onLogout = () => {
+        setUserData({
+            access: '',
+            type: '',
+            name: '',
+            lastname: '',
+            email: '',
+        });
+    };
 
 
     const renderCart = () => {
@@ -80,11 +83,14 @@ function Navbar({userData} : {userData: UserData}) {
                 </button>
             )
         } else {
-            return (
+            return (<div className="flex flex-row space-x-4 items-center">
                 <div className="font-light text-2xl cursor-pointer" onClick={() => userData.type === 'Admin' ? navigate('/admin') : navigate('/account/data')}>
                     Witaj, {userData.name}
                 </div>
-            )
+                <button className="text-xl border-2 border-[#FFBF00] text-white font-playfair py-2 px-4 rounded-full shadow-md" onClick={() => onLogout()} >
+                    Wyloguj
+                </button>
+            </div>)
         }
     }
 
@@ -212,13 +218,13 @@ function Navbar({userData} : {userData: UserData}) {
 
         }
     };
+
+
     return (
-    <nav>
-        {renderNavbarContent()}
-    </nav>
-    )
-
-
+        <nav>
+            {renderNavbarContent()}
+        </nav>
+    );
 }
 
 const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
