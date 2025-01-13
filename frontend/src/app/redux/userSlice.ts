@@ -1,8 +1,10 @@
 import { Action, createSlice, PayloadAction, ThunkAction } from '@reduxjs/toolkit';
 import { RootState } from '../store/mainStore';
 import parseCookie from '../utils/parseCookie';
+import { StringLiteral } from 'typescript';
 
 export interface UserData {
+  access: string;
   type: string;
   name: string;
   lastname: string;
@@ -12,8 +14,9 @@ export interface UserData {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    accessToken: (typeof document !== 'undefined' ? localStorage.getItem('token') : ""),
+    accessToken: (typeof document !== 'undefined' ? localStorage.getItem('accessToken') : ""),
     user: {
+      access: (typeof document !== 'undefined' ? parseCookie('accessToken') : ""),
       type: (typeof document !== 'undefined' ? parseCookie('userType') : ""),
       name: (typeof document !== 'undefined' ? parseCookie('userFirstName') : ""),
       lastname: (typeof document !== 'undefined' ? parseCookie('userLastName') : ""),
@@ -38,6 +41,7 @@ export function setUserDataThunk(
   data: UserData,
 ): ThunkAction<void, RootState, unknown, Action> {
   return async function setDataThunk(dispatch) {
+    document.cookie = `accessToken=${data.access}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userType=${data.type}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userFirstName=${data.name}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userLastName=${data.lastname}; SameSite=Strict; Secure; path=/`;
@@ -50,7 +54,7 @@ export function setAccessTokenThunk(
   token: string,
 ): ThunkAction<void, RootState, unknown, Action> {
   return async function setTokenThunk(dispatch) {
-    localStorage.setItem('token', token);
+    localStorage.setItem('accessToken', token);
     dispatch(setAccessToken(token));
   };
 }

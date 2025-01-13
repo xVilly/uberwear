@@ -1,8 +1,7 @@
 import { UserData } from "./redux/userSlice";
 
 export const loginRequest = async (email: string, 
-  password: string, 
-  setAccessToken: (token: string) => void
+  password: string 
 ) => {
   const response = await fetch('http://localhost:8000/login', {
     method: 'POST',
@@ -13,20 +12,19 @@ export const loginRequest = async (email: string,
     body: JSON.stringify({ email, password }),
   });
   const data = await response.json();
-  if (data.access_token) {
-    setAccessToken(data.access_token);
-  }
+  // if (data.access_token) {
+  //   localStorage.setItem('token', data.access_token);
+  // }
   return data;
 };
 
-export const getUserInfo = async () => {
-  const token = localStorage.getItem('token');
-
+export const getUserInfo = async (accessToken: string) => {
+  console.log("accessToken", accessToken)
   const response = await fetch('http://localhost:8000/user/me', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${accessToken}`,
     },
   });
   return response.json();

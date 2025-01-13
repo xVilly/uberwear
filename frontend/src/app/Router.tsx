@@ -3,7 +3,6 @@ import { Layout } from "./Layout";
 import { RouteError } from "./pages/Error";
 import { HomePage } from "./pages/Home";
 import { CreateAccountPage } from "./pages/CreateAccount";
-import { AccountPageData} from "./pages/AccountPageData";
 import { AccountPageOrders} from "./pages/AccountPageOrders";
 import { AccountPageReturns} from "./pages/AccountPageReturns";
 import { AccountPagePoints} from "./pages/AccountPagePoints";
@@ -15,8 +14,9 @@ import {AdminCouriers} from "./pages/AdminCouriers";
 import {AdminOrders} from "./pages/AdminOrders";
 import {AdminUsers} from "./pages/AdminUsers";
 import { CourierPanelPage } from "./pages/CourierPanel";
-import {AdminData} from "./pages/AdminData";
 import LogInPage from "./pages/LogIn";
+import AdminData from "./pages/AdminData";
+import AccountPageData from "./pages/AccountPageData";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(

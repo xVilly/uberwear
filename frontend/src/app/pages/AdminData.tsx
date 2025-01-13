@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserInfo, updateUserInfo } from '../requests';
+import { AppDispatch, RootState } from '../store/mainStore';
+import { connect } from 'react-redux';
+import { UserData } from '../redux/userSlice';
 
 type FormData = {
   Imię: string;
@@ -10,7 +13,7 @@ type FormData = {
   Hasło: string;
 };
 
-export function AdminData() {
+function AdminData({accessToken, userData} : {accessToken: string|null, userData: UserData}) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
   const [formData, setFormData] = useState<FormData>({
@@ -24,7 +27,7 @@ export function AdminData() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const userInfo = await getUserInfo();
+        const userInfo = await getUserInfo(userData.access);
         setFormData({
           Imię: userInfo.name,
           Nazwisko: userInfo.surname,
@@ -329,3 +332,9 @@ export function AdminData() {
     </div>
   );
 }
+
+
+const mapStateToProps = (state: RootState) => ({ accessToken: state.user.accessToken, userData: state.user.user });
+
+
+export default connect(mapStateToProps)(AdminData);

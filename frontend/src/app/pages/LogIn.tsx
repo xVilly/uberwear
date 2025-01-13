@@ -20,15 +20,17 @@ function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const data = await loginRequest(email, password, setAccessToken);
+      const data = await loginRequest(email, password);
       if (data.access_token) {
-        const userInfo = await getUserInfo();
+        setAccessToken(data.access_token);
+        const userInfo = await getUserInfo(data.access_token);
         
         setUserData({
           type: userInfo.user.user_type,
           name: userInfo.user.name,
           lastname: userInfo.user.surname,
-          email: userInfo.user.email
+          email: userInfo.user.email,
+          access: data.access_token
         });
 
         if (userInfo.user.user_type === 'Admin') {
