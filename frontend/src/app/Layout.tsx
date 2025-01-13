@@ -1,18 +1,30 @@
-import {Outlet, useNavigation} from 'react-router-dom';
+import {Outlet, useNavigation, useLocation} from 'react-router-dom';
 // import Navbar from './components/Navbar';
 // import {Footer} from './components/Footer';
 import ScrollToTop from 'react-scroll-to-top';
 import Navbar from './components/Navbar';
+import {useState} from 'react';
+import {ExpandableMenu} from './components/ExpandableMenu';
 
 export function Layout()
 {
     const navigation = useNavigation();
+        const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+        const location = useLocation();
+         const userGroup = 'admin';
+
+
     return (<>
-        <div className="box-border min-h-full flex flex-col bg-amber-50">
-            <Navbar/>
-            <main className="overscroll-auto h-full w-full flex-grow">
+        <div className="box-border flex flex-col bg-amber-50 ">
+            <Navbar
+                isSidebarExpanded={isSidebarExpanded}
+                setIsSidebarExpanded={setIsSidebarExpanded}
+            />
+
+            <ExpandableMenu isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded}/>
+            <main className="flex-grow">
                 {navigation.state === "loading" && <div className="loader loader-centered"/>}
-                <div className={`${navigation.state === "loading" ? "loader-bg" : "opacity-100"}`}>
+                <div className={`min-h-screen flex flex-col [&>*]:grow ${navigation.state === "loading" ? "loader-bg" : "opacity-100"}`}>
                     <Outlet/>
                 </div>
             </main>

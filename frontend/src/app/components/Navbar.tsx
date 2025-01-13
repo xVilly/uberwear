@@ -2,17 +2,21 @@ import { useQuery } from '@tanstack/react-query';
 import Logo from '../../images/clothes_logo.png';
 import Cart from '../../images/cart_icon.png'
 // import { parseCurrentUser } from '../../auth/logic';
-import { setUserDataThunk, UserData } from '../redux/userSlice';
+import { setUserDataThunk, UserData} from '../redux/userSlice';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {ExpandableMenu} from './ExpandableMenu';
+import { useState } from 'react';
  
 interface Props {
     userData: UserData;
     setUserData(data: UserData): void;
+    isSidebarExpanded: boolean;
+    setIsSidebarExpanded: (value: boolean) => void;
 };
-
-function Navbar({ userData, setUserData }: Props) {
+// function Navbar({ userData, setUserData }: Props) {
+function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -184,6 +188,47 @@ function Navbar({ userData, setUserData }: Props) {
                 </div>
             </nav>
                 )
+                  case '/offer':
+                    return (
+                    <>
+                <nav className="fixed left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
+                <div
+                  className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl"
+                >
+                    <div className="page-container flex h-full items-center text-lg text-white">
+                        <div className="flex h-full w-full items-center justify-between">
+                            <div className="flex flex-row space-x-8 items-center">
+                               <button
+                                    onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+                                    >
+                                </button>
+                                <img
+                                  src={Logo}
+                                  alt="logo"
+                                 onClick={()=>navigate('/')}
+                                  className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
+                                />
+                                <div className="font-playfair text-2xl">
+                                    QuickFit
+                                </div>
+                                <div className="flex flex-row space-x-8 items-center">
+                                {renderCart()}
+                                {renderOffer()}
+                                {renderAdminButton()}
+                                {renderCourierButton()}
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-gray w-full max-h-14">
+                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4">
+                    </div>
+                </div>
+            </nav>
+            </>
+                )
+
             default:
                 return (
                 <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
