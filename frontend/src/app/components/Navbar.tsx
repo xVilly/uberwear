@@ -189,6 +189,8 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
             </nav>
                 )
                   case '/offer':
+                  case '/offer/fashionbout':
+                  case '/offer/nyclothes':
                     return (
                     <>
                 <nav className="fixed left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">

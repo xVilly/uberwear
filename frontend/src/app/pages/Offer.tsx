@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 export function OfferPage() {
+  const navigate = useNavigate();
   const brands = [
-    { name: 'Fashion Bout', img: '/brands/fashion_bout.jpg' },
-    { name: 'NY Clothes', img: '/brands/nyclothes.jpg' },
+    { name: 'Fashion Bout', img: '/brands/fashion_bout.jpg', path: '/offer/fashionbout'},
+    { name: 'NY Clothes', img: '/brands/nyclothes.jpg', path: '/offer/nyclothes'},
   ];
 
   return (
@@ -59,7 +61,9 @@ export function OfferPage() {
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease',
               }}
-              onClick={() => alert(`You selected ${brand.name}`)}
+//               onClick={() => alert(`You selected ${brand.name}`)}
+              onClick={() => navigate(brand.path)}
+
               onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
               onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             ></div>

@@ -13,6 +13,8 @@ import { AdminPanelPage } from "./pages/AdminPanel";
 import {AdminCouriers} from "./pages/AdminCouriers";
 import {AdminOrders} from "./pages/AdminOrders";
 import {AdminUsers} from "./pages/AdminUsers";
+import {FashionBout} from "./pages/ShopFashionBout";
+import {NYClothes} from "./pages/ShopNyClothes";
 import { CourierPanelPage } from "./pages/CourierPanel";
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/AdminData";
@@ -37,6 +39,8 @@ const routes = createBrowserRouter(
       <Route path="admin/users" element={<AdminUsers />} />
       <Route path="courier" element={<CourierPanelPage />} />
       <Route path="admin/data" element={<AdminData />} />
+      <Route path="offer/fashionbout" element={<FashionBout />} />
+      <Route path="offer/nyclothes" element={<NYClothes />} />
     </Route>
   )
 );

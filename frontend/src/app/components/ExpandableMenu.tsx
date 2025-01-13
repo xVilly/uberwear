@@ -59,10 +59,10 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
             gap: '10px',
           }}
         >
-          <MenuItem icon="🏠" label="Home" isExpanded={isExpanded} />
-          <MenuItem icon="ℹ️" label="About" isExpanded={isExpanded} />
-          <MenuItem icon="📞" label="Contact" isExpanded={isExpanded} />
-          <MenuItem icon="🛒" label="Shop" isExpanded={isExpanded} />
+          <MenuItem icon="🏠" label="Strona główna" isExpanded={isExpanded} />
+          <MenuItem icon="ℹ️" label="O nas" isExpanded={isExpanded} />
+          <MenuItem icon="📞" label="Kontakt" isExpanded={isExpanded} />
+          <MenuItem icon="🛒" label="Zarejestruj swój sklep" isExpanded={isExpanded} />
         </div>
       </div>
 

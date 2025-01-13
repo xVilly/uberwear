@@ -12,7 +12,10 @@ export function Layout()
         const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
         const location = useLocation();
 
-        const isOfferPage = location.pathname === '/offer';
+        const isOfferPage =
+        location.pathname === '/offer' ||
+        location.pathname === '/offer/fashionbout' ||
+        location.pathname === '/offer/nyclothes';
 
     return (<>
         <div className="box-border flex flex-col bg-amber-50 ">
