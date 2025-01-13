@@ -13,7 +13,7 @@ type FormData = {
   Hasło: string;
 };
 
-function AdminData({accessToken, userData} : {accessToken: string|null, userData: UserData}) {
+function AdminData({userData} : {userData: UserData}) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
   const [formData, setFormData] = useState<FormData>({
@@ -334,7 +334,7 @@ function AdminData({accessToken, userData} : {accessToken: string|null, userData
 }
 
 
-const mapStateToProps = (state: RootState) => ({ accessToken: state.user.accessToken, userData: state.user.user });
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
 
 
 export default connect(mapStateToProps)(AdminData);

@@ -6,13 +6,11 @@ import { AppDispatch, RootState } from '../store/mainStore';
 import { setAccessToken, setUserDataThunk, UserData } from '../redux/userSlice';
 
 interface Props {
-  accessToken: string | null;
   userData: UserData;
-  setAccessToken: (token: string) => void;
   setUserData: (data: UserData) => void;
 }
 
-function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) {
+function LogInPage({userData, setUserData}: Props) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +20,6 @@ function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) 
     try {
       const data = await loginRequest(email, password);
       if (data.access_token) {
-        setAccessToken(data.access_token);
         const userInfo = await getUserInfo(data.access_token);
         
         setUserData({
@@ -146,12 +143,10 @@ function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) 
 
 
 
-const mapStateToProps = (state: RootState) => ({ accessToken: state.user.accessToken, userData: state.user.user });
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        setAccessToken: (token: string) =>
-            dispatch(setAccessToken(token)),
         setUserData: (data: UserData) =>
             dispatch(setUserDataThunk(data))
     };

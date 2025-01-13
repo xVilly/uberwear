@@ -19,7 +19,6 @@ export const loginRequest = async (email: string,
 };
 
 export const getUserInfo = async (accessToken: string) => {
-  console.log("accessToken", accessToken)
   const response = await fetch('http://localhost:8000/user/me', {
     method: 'GET',
     headers: {
