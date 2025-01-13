@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setAccessToken, setUserDataThunk, UserData } from '../redux/userSlice';
+import { loginRequest, getUserInfo } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
+import { setAccessToken, setUserDataThunk, UserData } from '../redux/userSlice';
 
 interface Props {
   accessToken: string | null;
@@ -19,34 +20,9 @@ function LogInPage({accessToken, userData, setAccessToken, setUserData}: Props) 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/login', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
+      const data = await loginRequest(email, password);
       if (data.access_token) {
-        // Save the token in local storage or context
-        localStorage.setItem('token', data.access_token);
-        setAccessToken(data.access_token);
-        const response2 = await fetch('http://localhost:8000/user/me', {
-          method: 'GET',
-          headers: {
-            'accept': 'application/json',
-            'Authorization': `Bearer ${data.access_token}`,
-          },
-        });
-        const userInfo = await response2.json();
-        setUserData({
-          type: userInfo.user.user_type,
-          name: userInfo.user.name,
-          lastname: userInfo.user.surname,
-          email: userInfo.user.email
-        });
-        //localStorage.setItem('user', JSON.stringify(userInfo));
+        const userInfo = await getUserInfo();
         
         if (userInfo.user.user_type === 'Admin') {
           navigate("/admin");

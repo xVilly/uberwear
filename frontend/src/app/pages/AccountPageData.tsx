@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getUserInfo, updateUserInfo } from '../requests';
 
 type FormData = {
   Imię: string;
   Nazwisko: string;
   Email: string;
   'Numer Telefonu': string;
-  'Data Urodzenia': string;
   Hasło: string;
 };
 
@@ -14,13 +14,31 @@ export function AccountPageData() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
   const [formData, setFormData] = useState<FormData>({
-    Imię: 'Jan',
-    Nazwisko: 'Kowalski',
-    Email: 'jan.kowalski@example.com',
-    'Numer Telefonu': '+48 123 456 789',
-    'Data Urodzenia': '1990-01-01',
+    Imię: '',
+    Nazwisko: '',
+    Email: '',
+    'Numer Telefonu': '',
     Hasło: '********',
   });
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await getUserInfo();
+        setFormData({
+          Imię: userInfo.name,
+          Nazwisko: userInfo.surname,
+          Email: userInfo.email,
+          'Numer Telefonu': userInfo.phone,
+          Hasło: '********',
+        });
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   // Open popup
   const handleEditClick = (field: keyof FormData) => {
@@ -45,9 +63,14 @@ export function AccountPageData() {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    closePopup();
+    try {
+      await updateUserInfo(formData);
+      closePopup();
+    } catch (error) {
+      console.error('Failed to update user info:', error);
+    }
   };
 
   return (
