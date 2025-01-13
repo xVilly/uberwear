@@ -32,6 +32,12 @@ class UserCreate(BaseModel):
     district: Optional[str] = "None"
     
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    password: Optional[str] = None
 
 # Klasa modelu danych dla endpointu /login - to co wpisujemy w formularzu
 class UserLogin(BaseModel):
@@ -151,3 +157,24 @@ def current_user(db: Session = Depends(get_db), user: User = Depends(get_current
     if user.user_type == UserType.Admin:
         return_data["admin"] = get_admin(db, user.user_ID)
     return return_data
+
+
+# Update profile information if field is not None
+@router.patch("/user/me")
+def update_user(form: UserUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
+    if form.name:
+        user.name = form.name
+    if form.surname:
+        user.surname = form.surname
+    if form.email:
+        user.email = form.email
+    if form.phone:
+        user.phone = form.phone
+    if form.password:
+        user.password = get_password_hash(form.password)
+    db.commit()
+    db.refresh(user)
+    return {
+        "message": "User updated successfully",
+        "updated_user_id": user.user_ID
+    }
