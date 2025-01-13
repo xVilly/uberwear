@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Hamburger from '../../images/hamburger.png'
 
 interface MenuItemProps {
   icon: string; // Icon is expected to be a string (like an emoji or an SVG path)
@@ -42,7 +43,11 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
             borderBottom: '1px solid #4B5563',
           }}
         >
-          Menu
+           {isExpanded ? (
+            <span>Menu</span>
+          ) : (
+            <img src={Hamburger} alt="Hamburger Icon" style={{ width: '30px', height: '30px' }} />
+          )}
         </div>
 
         {/* Menu Items */}

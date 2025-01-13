@@ -11,8 +11,8 @@ export function Layout()
     const navigation = useNavigation();
         const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
         const location = useLocation();
-         const userGroup = 'admin';
 
+        const isOfferPage = location.pathname === '/offer';
 
     return (<>
         <div className="box-border flex flex-col bg-amber-50 ">
@@ -21,7 +21,12 @@ export function Layout()
                 setIsSidebarExpanded={setIsSidebarExpanded}
             />
 
-            <ExpandableMenu isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded}/>
+             {isOfferPage && (
+                    <ExpandableMenu
+                        isExpanded={isSidebarExpanded}
+                        setIsExpanded={setIsSidebarExpanded}
+                    />
+                )}
             <main className="flex-grow">
                 {navigation.state === "loading" && <div className="loader loader-centered"/>}
                 <div className={`min-h-screen flex flex-col [&>*]:grow ${navigation.state === "loading" ? "loader-bg" : "opacity-100"}`}>
