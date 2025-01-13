@@ -30,7 +30,7 @@ export const AdminCouriers = () => {
                 >
                     <li style={{ marginBottom: '15px' }}>
                         <Link
-                            to="/account/data"
+                            to="/admin/data"
                             style={{
                                 textDecoration: 'none',
                                 color: '#F3F4F6',

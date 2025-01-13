@@ -16,6 +16,7 @@ import {AdminCouriers} from "./pages/AdminCouriers";
 import {AdminOrders} from "./pages/AdminOrders";
 import {AdminUsers} from "./pages/AdminUsers";
 import { CourierPanelPage } from "./pages/CourierPanel";
+import {AdminData} from "./pages/AdminData";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +36,7 @@ const routes = createBrowserRouter(
       <Route path="admin/orders" element={<AdminOrders />} />
       <Route path="admin/users" element={<AdminUsers />} />
       <Route path="courier" element={<CourierPanelPage />} />
+      <Route path="admin/data" element={<AdminData />} />
     </Route>
   )
 );

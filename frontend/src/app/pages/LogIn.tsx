@@ -1,8 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function LogInPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (data.access_token) {
+        // Save the token in local storage or context
+        localStorage.setItem('token', data.access_token);
+        const response2 = await fetch('http://localhost:8000/user/me', {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${data.access_token}`,
+          },
+        });
+        const userInfo = await response2.json();
+        //localStorage.setItem('user', JSON.stringify(userInfo));
+        
+        if (userInfo.user.user_type === 'Admin') {
+          navigate("/admin");
+        } else if (userInfo.user.user_type === 'Courier') {
+          navigate("/courier");
+        } else if (userInfo.user.user_type === 'Client') {
+          navigate("/account/data");
+        }
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
 
   return (
     <div
@@ -30,6 +70,7 @@ export function LogInPage() {
 
       {/* Input Form */}
       <form
+        onSubmit={handleSubmit}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -43,6 +84,8 @@ export function LogInPage() {
           <input
             type="email"
             placeholder="Wprowadź email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             style={{
               width: '100%',
               padding: '10px',
@@ -62,6 +105,8 @@ export function LogInPage() {
           <input
             type="password"
             placeholder="Wprowadź hasło"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             style={{
               width: '100%',
               padding: '10px',
@@ -74,7 +119,6 @@ export function LogInPage() {
             }}
           />
         </label>
-
 
         {/* Submit Button */}
         <button
@@ -90,10 +134,8 @@ export function LogInPage() {
             cursor: 'pointer',
             marginTop: '10px',
           }}
-
-           onClick={() => navigate("/account/data")}
         >
-         Zaloguj się
+          Zaloguj się
         </button>
       </form>
     </div>

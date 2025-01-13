@@ -11,7 +11,6 @@ import {Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 function Navbar({userGroup, userData} : {userGroup: string, userData: UserData}) {
 
-    userGroup = 'Courier';
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -82,7 +81,7 @@ function Navbar({userGroup, userData} : {userGroup: string, userData: UserData})
             )
         } else {
             return (
-                <div className="font-light text-2xl cursor-pointer" onClick={() => userGroup === 'admin' ? navigate('/admin') : navigate('/account/data')}>
+                <div className="font-light text-2xl cursor-pointer" onClick={() => userGroup === 'Admin' ? navigate('/admin') : navigate('/account/data')}>
                     Witaj, {userData.name}
                 </div>
             )
