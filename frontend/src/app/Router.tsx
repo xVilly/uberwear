@@ -15,7 +15,16 @@ import {AdminOrders} from "./pages/AdminOrders";
 import {AdminUsers} from "./pages/AdminUsers";
 import {FashionBout} from "./pages/ShopFashionBout";
 import {NYClothes} from "./pages/ShopNyClothes";
+import { NYHoodies } from "./pages/NYClothesHoodies";
+import { NYSweatPants } from "./pages/NYClothesSweatPants";
+import { NYTees } from "./pages/NYClothesTees";
+import { AboutPage } from "./pages/AboutPage";
+import { ContactPage } from "./pages/ContactPage";
+import { RegisterShopPage } from "./pages/RegisterShopPage";
 import { CourierPanelPage } from "./pages/CourierPanel";
+import { PurchasePageNYH} from './pages/NYHoodiePurchasePage';
+import { PurchasePageNYSw} from './pages/NYSweatPantsPurchasePage';
+import { PurchasePageTee } from './pages/NYTeePurchasePage';
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/AdminData";
 import AccountPageData from "./pages/AccountPageData";
@@ -41,6 +50,15 @@ const routes = createBrowserRouter(
       <Route path="admin/data" element={<AdminData />} />
       <Route path="offer/fashionbout" element={<FashionBout />} />
       <Route path="offer/nyclothes" element={<NYClothes />} />
+      <Route path="offer/nyclothes/hoodies" element={<NYHoodies />} />
+      <Route path="offer/nyclothes/sweatpants" element={<NYSweatPants />} />
+      <Route path="offer/nyclothes/tees" element={<NYTees />} />
+      <Route path="about" element={<AboutPage />} />
+      <Route path="contact" element={<ContactPage />} />
+      <Route path="register-shop" element={<RegisterShopPage />} />
+      <Route path="/purchase/hoodie/:color" element={<PurchasePageNYH />} />
+      <Route path="/purchase/sweatpants/:color" element={<PurchasePageNYSw />} />
+      <Route path="/purchase-tee/:color" element={<PurchasePageTee />} />
     </Route>
   )
 );

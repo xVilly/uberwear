@@ -1,4 +1,4 @@
-import {Outlet, useNavigation, useLocation} from 'react-router-dom';
+import {Outlet, useNavigation, useLocation, useParams} from 'react-router-dom';
 // import Navbar from './components/Navbar';
 // import {Footer} from './components/Footer';
 import ScrollToTop from 'react-scroll-to-top';
@@ -11,11 +11,19 @@ export function Layout()
     const navigation = useNavigation();
         const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
         const location = useLocation();
+        const { color } = useParams();
 
         const isOfferPage =
         location.pathname === '/offer' ||
         location.pathname === '/offer/fashionbout' ||
-        location.pathname === '/offer/nyclothes';
+        location.pathname === '/offer/nyclothes' ||
+        location.pathname === '/offer/nyclothes/hoodies' ||
+        location.pathname === '/offer/nyclothes/sweatpants' ||
+        location.pathname === '/offer/nyclothes/tees' ||
+        location.pathname.includes('/purchase/hoodie/') ||
+        location.pathname.includes('/purchase/sweatpants/') ||
+        location.pathname.includes('/purchase/tees/') ;
+        console.log(color);  
 
     return (<>
         <div className="box-border flex flex-col bg-amber-50 ">

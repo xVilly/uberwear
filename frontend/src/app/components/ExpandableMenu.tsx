@@ -73,7 +73,7 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
             <MenuItem icon="📞" label="Kontakt" isExpanded={isExpanded} />
           </Link>
 
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to="/register-shop" style={{ textDecoration: 'none', color: 'inherit' }}>
             <MenuItem icon="🛒" label="Zarejestruj swój sklep" isExpanded={isExpanded} />
           </Link>
 

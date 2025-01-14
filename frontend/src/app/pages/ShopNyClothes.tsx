@@ -1,27 +1,32 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function NYClothes() {
+  const navigate = useNavigate();
+
   const categories = [
     {
       name: 'Bluzy',
       folder: '/clothes/shop1/hoodies/',
       suffix: '_h.jpg',
-      colors: ['black', 'blue', 'brown', 'grey', 'white'],
+      color: 'black',
+      path: '/offer/nyclothes/hoodies',
     },
     {
-      name: 'Spodnie dresowe', 
+      name: 'Spodnie dresowe',
       folder: '/clothes/shop1/sweatpants/',
       suffix: '_sw.jpg',
-      colors: ['black', 'brown', 'grey'],
+      color: 'black',
+      path: '/offer/nyclothes/sweatpants',
     },
     {
-      name: 'T-shirty',
+      name: 'T-Shirty',
       folder: '/clothes/shop1/t-shirts/',
       suffix: '_t.jpg',
-      colors: ['black', 'green', 'pink', 'purple', 'yellow'],
+      color: 'black',
+      path: '/offer/nyclothes/tees',
     },
   ];
-
 
   return (
     <div
@@ -37,15 +42,23 @@ export function NYClothes() {
       }}
     >
       {/* Header */}
-      <h1 style={{ marginBottom: '40px', fontSize: '2.5rem', fontWeight: 'bold' }}>Wybierz kategorię</h1>
-      <h2 style={{ marginBottom: '20px', fontSize: '2rem', fontWeight: 'bold' }}>Wybierz kategorię</h2>
+      <h1 style={{ marginBottom: '40px', fontSize: '2.5rem', fontWeight: 'bold' }}>
+      Wybierz kategorię 
+      </h1>
 
       {/* Category Tiles */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '20px',
+          justifyContent: 'center',
+        }}
+      >
         {categories.map((category) => (
           <div
-           className="category-tile"
             key={category.name}
+            className="category-tile"
             style={{
               width: '300px',
               borderRadius: '8px',
@@ -56,23 +69,27 @@ export function NYClothes() {
               cursor: 'pointer',
               transition: 'transform 0.3s',
             }}
-            onClick={() => alert(`You selected ${category.name}!`)} // Placeholder for navigation
+            onClick={() => navigate(category.path)}
           >
             {/* Representative Image */}
-           
             <img
-            src={`${category.folder}${category.colors[0]}${category.suffix}`}
-            alt={category.name}
-            style={{
-              width: '300px',
-              height: '300px',
-              objectFit: 'scale-down',
-              marginLeft: category.name === 'Spodnie dresowe' ? '4px' : '0', // Adjust the value as needed
-            }}
-          />
+              src={`${category.folder}${category.color}${category.suffix}`}
+              alt={category.name}
+              style={{
+                width: '300px',
+                height: '300px',
+                objectFit: 'scale-down',
+              }}
+            />
 
             {/* Category Name */}
-            <h2 style={{ padding: '10px', background: '#1E3A5F', color: '#fff' }}>
+            <h2
+              style={{
+                padding: '10px',
+                background: '#1E3A5F',
+                color: '#fff',
+              }}
+            >
               {category.name}
             </h2>
           </div>

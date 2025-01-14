@@ -119,136 +119,110 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
     }
 
     const renderNavbarContent = () => {
-        switch (location.pathname) {
-            case '/login':
-                 return (
+        const path = location.pathname;
+    
+        // For '/login' path
+        if (path === '/login') {
+            return (
                 <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
-                <div
-                  className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl"
-                >
-                    <div className="page-container flex h-full items-center text-lg text-white">
-                        <div className="flex h-full w-full items-center justify-between">
-                            <div className="flex flex-row space-x-8 items-center">
-                                <img
-                                  src={Logo}
-                                  alt="logo"
-                                 onClick={()=>navigate('/')}
-                                  className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
-                                />
-                                <div className="font-playfair text-2xl">
-                                    QuickFit
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-gray w-full max-h-14">
-                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4">
-                    </div>
-                </div>
-            </nav>
-                )
-
-            case '/account/data':
-            case '/account/orders':
-            case '/account/returns':
-            case '/account/points':
-            case '/account/favbrands':
-            case '/cart':
-                    return (
-                <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
-                <div
-                  className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl"
-                >
-                    <div className="page-container flex h-full items-center text-lg text-white">
-                        <div className="flex h-full w-full items-center justify-between">
-                            <div className="flex flex-row space-x-8 items-center">
-                                <img
-                                  src={Logo}
-                                  alt="logo"
-                                 onClick={()=>navigate('/')}
-                                  className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
-                                />
-                                <div className="font-playfair text-2xl">
-                                    QuickFit
-                                </div>
+                    <div className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl">
+                        <div className="page-container flex h-full items-center text-lg text-white">
+                            <div className="flex h-full w-full items-center justify-between">
                                 <div className="flex flex-row space-x-8 items-center">
-                                {renderCart()}
-                                {renderOffer()}
-                                {renderAdminButton()}
-                                {renderCourierButton()}
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-gray w-full max-h-14">
-                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4">
-                    </div>
-                </div>
-            </nav>
-                )
-                  case '/offer':
-                  case '/offer/fashionbout':
-                  case '/offer/nyclothes':
-                    return (
-                    <>
-                <nav className="fixed left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
-                <div
-                  className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl"
-                >
-                    <div className="page-container flex h-full items-center text-lg text-white">
-                        <div className="flex h-full w-full items-center justify-between">
-                            <div className="flex flex-row space-x-8 items-center">
-                               <button
-                                    onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-                                    >
-                                </button>
-                                <img
-                                  src={Logo}
-                                  alt="logo"
-                                 onClick={()=>navigate('/')}
-                                  className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
-                                />
-                                <div className="font-playfair text-2xl">
-                                    QuickFit
+                                    <img
+                                        src={Logo}
+                                        alt="logo"
+                                        onClick={() => navigate('/')}
+                                        className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
+                                    />
+                                    <div className="font-playfair text-2xl">QuickFit</div>
                                 </div>
-                                <div className="flex flex-row space-x-8 items-center">
-                                {renderCart()}
-                                {renderOffer()}
-                                {renderAdminButton()}
-                                {renderCourierButton()}
-                            </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="bg-gray w-full max-h-14">
-                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4">
+                    <div className="bg-gray w-full max-h-14">
+                        <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4"></div>
                     </div>
-                </div>
-            </nav>
-            </>
-                )
-
-            default:
-                return (
+                </nav>
+            );
+        }
+    
+        // For '/account/*' paths
+        if (path.includes('/account/') || path.includes('/cart') || path.includes('/offer') || path.includes('/purchase') || path.includes('about') || path.includes('contact') || path.includes('register')) {
+            return (
                 <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
-                <div
-                  className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl"
-                >
+                    <div className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl">
+                        <div className="page-container flex h-full items-center text-lg text-white">
+                            <div className="flex h-full w-full items-center justify-between">
+                                <div className="flex flex-row space-x-8 items-center">
+                                    <img
+                                        src={Logo}
+                                        alt="logo"
+                                        onClick={() => navigate('/')}
+                                        className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
+                                    />
+                                    <div className="font-playfair text-2xl">QuickFit</div>
+                                    <div className="flex flex-row space-x-8 items-center">
+                                        {renderCart()}
+                                        {renderOffer()}
+                                        {renderAdminButton()}
+                                        {renderCourierButton()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-gray w-full max-h-14">
+                        <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4"></div>
+                    </div>
+                </nav>
+            );
+        }
+    
+        // For '/offer/*' paths
+        // if (path.includes('/offer/') ) {
+        //     return (
+        //         <>
+        //             <nav className="fixed left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
+        //                 <div className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl">
+        //                     <div className="page-container flex h-full items-center text-lg text-white">
+        //                         <div className="flex h-full w-full items-center justify-between">
+        //                             <button onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}></button>
+        //                             <img
+        //                                 src={Logo}
+        //                                 alt="logo"
+        //                                 onClick={() => navigate('/')}
+        //                                 className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
+        //                             />
+        //                             <div className="font-playfair text-2xl">QuickFit</div>
+        //                             <div className="flex flex-row space-x-8 items-center">
+        //                                 {renderCart()}
+        //                                 {renderOffer()}
+        //                                 {renderAdminButton()}
+        //                                 {renderCourierButton()}
+        //                             </div>
+        //                         </div>
+        //                     </div>
+        //                 </div>
+        //             </nav>
+        //         </>
+        //     );
+        // }
+    
+        // Default case if no matches
+        return (
+            <nav className="sticky left-0 top-0 z-40 max-h-20 min-w-full flex-shrink-0 flex-grow-0 print:hidden">
+                <div className="bg-[#1E3A5F] border-b-amber-300 border-b-4 h-full max-h-20 shadow-2xl">
                     <div className="page-container flex h-full items-center text-lg text-white">
                         <div className="flex h-full w-full items-center justify-between">
                             <div className="flex flex-row space-x-8 items-center">
                                 <img
-                                  src={Logo}
-                                  alt="logo"
-                                  onClick={() => window.open('')}
-                                  className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
+                                    src={Logo}
+                                    alt="logo"
+                                    onClick={() => window.open('')}
+                                    className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
                                 />
-                                <div className="font-playfair text-2xl">
-                                    QuickFit
-                                </div>
+                                <div className="font-playfair text-2xl">QuickFit</div>
                             </div>
                             <div className="flex flex-row space-x-8 items-center">
                                 {renderLoginLabel()}
@@ -257,15 +231,12 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
                     </div>
                 </div>
                 <div className="bg-gray w-full max-h-14">
-                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4">
-                    </div>
+                    <div className="page-container-no-padding py-0.5 pl-24 flex flex-row justify-start items-center space-x-4"></div>
                 </div>
             </nav>
-                )
-
-        }
+        );
     };
-
+    
 
     return (
         <nav>
