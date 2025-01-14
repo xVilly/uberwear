@@ -29,10 +29,10 @@ function AdminData({userData} : {userData: UserData}) {
       try {
         const userInfo = await getUserInfo(userData.access);
         setFormData({
-          Imię: userInfo.name,
-          Nazwisko: userInfo.surname,
-          Email: userInfo.email,
-          'Numer Telefonu': userInfo.phone,
+          Imię: userInfo.user.name,
+          Nazwisko: userInfo.user.surname,
+          Email: userInfo.user.email,
+          'Numer Telefonu': userInfo.user.phone,
           Hasło: '********',
         });
       } catch (error) {
