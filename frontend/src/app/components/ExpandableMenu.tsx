@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Hamburger from '../../images/hamburger.png'
+import { Link } from 'react-router-dom';
 
 interface MenuItemProps {
   icon: string; // Icon is expected to be a string (like an emoji or an SVG path)
@@ -26,7 +27,8 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
           top: 0, // Align to the top
           bottom:0,
           height: '100vh', // Full height
-          paddingTop: '80px'
+          paddingTop: '80px',
+          outline: '2px solid #FFBF00', // Amber outline
         }}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
@@ -59,10 +61,22 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
             gap: '10px',
           }}
         >
-          <MenuItem icon="🏠" label="Strona główna" isExpanded={isExpanded} />
-          <MenuItem icon="ℹ️" label="O nas" isExpanded={isExpanded} />
-          <MenuItem icon="📞" label="Kontakt" isExpanded={isExpanded} />
-          <MenuItem icon="🛒" label="Zarejestruj swój sklep" isExpanded={isExpanded} />
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem icon="🏠" label="Strona główna" isExpanded={isExpanded} />
+          </Link>
+
+          <Link to="/about" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem icon="ℹ️" label="O nas" isExpanded={isExpanded} />
+          </Link>
+
+          <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem icon="📞" label="Kontakt" isExpanded={isExpanded} />
+          </Link>
+
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem icon="🛒" label="Zarejestruj swój sklep" isExpanded={isExpanded} />
+          </Link>
+
         </div>
       </div>
 
