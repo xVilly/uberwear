@@ -40,6 +40,7 @@ export function PurchasePageNYH() {
     }
 
     const selectedHoodie = {
+      name: 'bluza',
       color: translatedColor,
       size: selectedSize,
       price: hoodies.price, // Include price
