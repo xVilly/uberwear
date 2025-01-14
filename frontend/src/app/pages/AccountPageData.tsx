@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { getUserInfo, updateUserInfo } from '../requests';
 import { RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
-import AdminData from './AdminData';
+import AdminData from './admin/AdminData';
 import { UserData } from '../redux/userSlice';
 
 type FormData = {
@@ -71,7 +71,7 @@ function AccountPageData({userData}: {userData: UserData}) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateUserInfo(formData);
+      await updateUserInfo(userData.access, formData);
       closePopup();
     } catch (error) {
       console.error('Failed to update user info:', error);
