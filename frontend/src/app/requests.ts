@@ -26,20 +26,34 @@ export const getUserInfo = async (accessToken: string) => {
   return response.json();
 };
 
-export const updateUserInfo = async (formData: any) => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found');
+export const updateUserInfo = async (accessToken: string, formData: any) => {
+  const body = {
+    name: formData.Imię,
+    surname: formData.Nazwisko,
+    email: formData.Email,
+    phone: formData['Numer Telefonu'],
+    password: formData.Hasło,
   }
 
-  const response = await fetch('http://localhost:8000/user/update', {
-    method: 'PUT',
+  const response = await fetch('http://localhost:8000/user/me', {
+    method: 'PATCH',
     headers: {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(formData),
+    body: JSON.stringify(body),
   });
   return response.json();
 };
+
+export const getOrders = async (accessToken: string) => {
+  const response = await fetch('http://localhost:8000/orders', {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
+  return response.json();
+}
