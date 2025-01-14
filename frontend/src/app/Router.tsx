@@ -66,7 +66,7 @@ const routes = createBrowserRouter(
       <Route path="register-shop" element={<RegisterShopPage />} />
       <Route path="/purchase/hoodie/:color" element={<PurchasePageNYH />} />
       <Route path="/purchase/sweatpants/:color" element={<PurchasePageNYSw />} />
-      <Route path="/purchase-tee/:color" element={<PurchasePageTee />} />
+      <Route path="/purchase/tees/:color" element={<PurchasePageTee />} />
     </Route>
   )
 );
