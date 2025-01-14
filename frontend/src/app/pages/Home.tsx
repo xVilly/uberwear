@@ -12,26 +12,27 @@ const TriangleOverlay = () => {
         left: 0,
         width: '100%',
         height: '100%',
+        overflow: 'hidden', // Prevent overflow
         pointerEvents: 'none', // Prevent the triangle from blocking interactions with other content
       }}
     >
       <div
         style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           right: '30%',
           width: 0,
           height: 0,
           borderLeft: '70vw solid transparent',
           borderRight: '80vw solid transparent',
-//           borderTop: '150vh solid rgba(139, 69, 19, 0.96)', // Semi-transparent brown color
-//           borderTop: '150vh solid rgba(78, 23, 3, 0.90)', // Amber-950 equivalent
           borderTop: '150vh solid rgba(30, 58, 95, 0.98)', // Jeans color equivalent (RGB: 30, 58, 95)
         }}
       ></div>
     </div>
   );
 };
+
+
 export function HomePage() {
 const navigate = useNavigate();
     return (

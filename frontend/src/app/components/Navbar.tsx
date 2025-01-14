@@ -219,7 +219,7 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
                                 <img
                                     src={Logo}
                                     alt="logo"
-                                    onClick={() => window.open('')}
+                                    onClick={() => navigate('/')}
                                     className="w-24 -mt-3 hover:scale-110 transition-all duration-500 cursor-pointer"
                                 />
                                 <div className="font-playfair text-2xl">QuickFit</div>
