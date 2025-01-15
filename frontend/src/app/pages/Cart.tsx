@@ -1,9 +1,10 @@
 import React from 'react';
 import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
 export function CartPage() {
   const { cart, removeFromCart } = useCart();
-
+  const navigate = useNavigate();
   // Calculate the total sum of the cart items
   const totalPrice = cart.reduce((acc, item) => acc + item.price, 0);
 
@@ -26,8 +27,8 @@ export function CartPage() {
           style={{
             display: 'block',
             height: '4px',
-            backgroundColor: '#FFBF00', 
-            margin: '8px auto 0', 
+            backgroundColor: '#FFBF00',
+            margin: '8px auto 0',
             borderRadius: '2px',
           }}
         />
@@ -82,10 +83,10 @@ export function CartPage() {
               />
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '5px' }}>
-                  {item.color} {item.name} 
+                  {item.color} {item.name}
                 </p>
                 <p style={{ fontSize: '1.15rem', color: '#4B5563' }}>Rozmiar: {item.size}</p>
-                <p style={{ fontSize: '1.3rem',  color: '#1E3A5F' }}>
+                <p style={{ fontSize: '1.3rem', color: '#1E3A5F' }}>
                   {item.price} zł
                 </p>
               </div>
@@ -102,13 +103,13 @@ export function CartPage() {
                 }}
               >
                 <img
-              src="/trashbinlogo.png" 
-              alt="Usuń"
-              style={{
-                width: '30px',   
-                height: '30px', 
-              }}
-            />
+                  src="/trashbinlogo.png"
+                  alt="Usuń"
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                  }}
+                />
               </button>
             </div>
           ))}
@@ -120,6 +121,28 @@ export function CartPage() {
             </h2>
           </div>
         </div>
+      )}
+
+      {/* Display "Przejdź do płatności" button if there are items in the cart */}
+      {cart.length > 0 && (
+        <button
+          style={{
+            marginTop: '20px',
+            background: '#FFBF00',
+            color: '#1E3A5F',
+            padding: '15px 30px',
+            borderRadius: '4px',
+            outline: '3px solid #1E3A5F',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '1.2rem',
+          }}
+          onClick={() => navigate('/purchase/filladdress')}
+        
+
+        >
+          Przejdź do kasy 
+        </button>
       )}
     </div>
   );

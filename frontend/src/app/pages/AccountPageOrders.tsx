@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../store/mainStore';
 import { UserData } from '../redux/userSlice';
 
-function AccountPageOrders({ userData }: { userData: UserData }) {
+export function AccountPageOrders({ userData }: { userData: UserData }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {

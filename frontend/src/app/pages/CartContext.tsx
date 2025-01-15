@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Define types for the cart items
 type CartItem = {
@@ -23,7 +23,20 @@ type CartProviderProps = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  // Load cart data from localStorage or set to an empty array if not available
+  const loadCartFromStorage = () => {
+    const storedCart = localStorage.getItem('cart');
+    return storedCart ? JSON.parse(storedCart) : [];
+  };
+
+  const [cart, setCart] = useState<CartItem[]>(loadCartFromStorage);
+
+  // Store the cart data in localStorage whenever it changes
+  useEffect(() => {
+    if (cart.length > 0) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const addToCart = (item: CartItem) => {
     setCart((prevCart) => [...prevCart, item]);
