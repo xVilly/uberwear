@@ -25,7 +25,6 @@ function AccountPageData({userData}: {userData: UserData}) {
   });
 
   useEffect(() => {
-    console.log("test");
     const fetchUserInfo = async () => {
       try {
         const userInfo = await getUserInfo(userData.access);
@@ -36,14 +35,13 @@ function AccountPageData({userData}: {userData: UserData}) {
           'Numer Telefonu': userInfo.user.phone,
           Hasło: '********',
         });
-        console.log(userInfo);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
       }
     };
 
     fetchUserInfo();
-  }, []);
+  }, [userData.access]);
 
   // Open popup
   const handleEditClick = (field: keyof FormData) => {

@@ -3,7 +3,7 @@ import { Layout } from "./Layout";
 import { RouteError } from "./pages/Error";
 import { HomePage } from "./pages/Home";
 import { CreateAccountPage } from "./pages/CreateAccount";
-import { AccountPageOrders} from "./pages/AccountPageOrders";
+import  AccountPageOrders from "./pages/AccountPageOrders";
 import { AccountPageReturns} from "./pages/AccountPageReturns";
 import { AccountPagePoints} from "./pages/AccountPagePoints";
 import { AccountPageFavBrands} from "./pages/AccountPageFavBrands";
@@ -25,6 +25,7 @@ import { CourierPanelPage } from "./pages/CourierPanel";
 import { PurchasePageNYH} from './pages/NYHoodiePurchasePage';
 import { PurchasePageNYSw} from './pages/NYSweatPantsPurchasePage';
 import { PurchasePageTee } from './pages/NYTeePurchasePage';
+import { AddressFillingPage } from "./pages/AddressFillPage";
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/admin/AdminData";
 import AccountPageData from "./pages/AccountPageData";
@@ -67,6 +68,7 @@ const routes = createBrowserRouter(
       <Route path="/purchase/hoodie/:color" element={<PurchasePageNYH />} />
       <Route path="/purchase/sweatpants/:color" element={<PurchasePageNYSw />} />
       <Route path="/purchase/tees/:color" element={<PurchasePageTee />} />
+      <Route path="/purchase/filladdress" element={<AddressFillingPage />} />
     </Route>
   )
 );

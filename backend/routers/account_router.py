@@ -9,7 +9,7 @@ from utils.config import cfg
 from utils.database import get_db
 from models.tables.user import User, UserType
 from utils.auth import (
-    authenticate_user, create_access_token, get_admin, get_current_active_user, get_current_active_admin, get_password_hash
+    authenticate_user, create_access_token, get_admin, get_current_active_user, get_current_active_admin, get_password_hash, get_client
 )
 from pydantic import BaseModel
 
@@ -154,6 +154,8 @@ def current_user(db: Session = Depends(get_db), user: User = Depends(get_current
             "last_login": user.last_login,
         }
     }
+    if user.user_type == UserType.Client:
+        return_data["client_id"] = get_client(db, user.user_ID).client_ID
     if user.user_type == UserType.Admin:
         return_data["admin"] = get_admin(db, user.user_ID)
     return return_data
@@ -176,5 +178,5 @@ def update_user(form: UserUpdate, db: Session = Depends(get_db), user: User = De
     db.refresh(user)
     return {
         "message": "User updated successfully",
-        "updated_user_id": user.user_ID
+        "updated_user_id": user.user_ID,
     }
