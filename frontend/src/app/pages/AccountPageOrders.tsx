@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getOrdersByClient } from '../requests';
+import { connect } from 'react-redux';
+import { RootState } from '../store/mainStore';
+import { UserData } from '../redux/userSlice';
 
-export function AccountPageOrders() {
+function AccountPageOrders({ userData }: { userData: UserData }) {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const data = await getOrdersByClient(userData.access, userData.clid);
+        setOrders(data);
+      
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+      }
+    };
+
+
+    fetchOrders();
+  }
+  , [userData.access]);
+
+
   return (
     <div
       style={{
@@ -124,7 +147,16 @@ export function AccountPageOrders() {
             }}
           ></span>
         </h1>
+        <ul>
+          {orders.map((order, index) => (
+            <li key={index}>{order}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 }
+
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
+
+export default connect(mapStateToProps)(AccountPageOrders);
