@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginRequest, getUserInfo } from '../requests';
+import { loginRequest, getUserInfo, getClientID } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { setUserDataThunk, UserData } from '../redux/userSlice';
 
@@ -21,13 +21,15 @@ function LogInPage({userData, setUserData}: Props) {
       const data = await loginRequest(email, password);
       if (data.access_token) {
         const userInfo = await getUserInfo(data.access_token);
+        const clientID = await getClientID(data.access_token);
         
         setUserData({
           type: userInfo.user.user_type,
           name: userInfo.user.name,
           lastname: userInfo.user.surname,
           email: userInfo.user.email,
-          access: data.access_token
+          access: data.access_token,
+          clid: clientID
         });
 
         if (userInfo.user.user_type === 'Admin') {

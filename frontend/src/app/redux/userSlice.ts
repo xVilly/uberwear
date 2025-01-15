@@ -9,18 +9,23 @@ export interface UserData {
   name: string;
   lastname: string;
   email: string;
+  clid : string;
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     accessToken: (typeof document !== 'undefined' ? localStorage.getItem('accessToken') : ""),
+    clientID: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
     user: {
       access: (typeof document !== 'undefined' ? parseCookie('accessToken') : ""),
       type: (typeof document !== 'undefined' ? parseCookie('userType') : ""),
       name: (typeof document !== 'undefined' ? parseCookie('userFirstName') : ""),
       lastname: (typeof document !== 'undefined' ? parseCookie('userLastName') : ""),
       email: (typeof document !== 'undefined' ? parseCookie('userEmail') : ""),
+      clid: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
+
+     
     },
   },
   reducers: {
@@ -29,11 +34,15 @@ const userSlice = createSlice({
     },
     setAccessToken(state, action: PayloadAction<string>) {
       state.accessToken = action.payload;
+    },
+    setClientID(state, action: PayloadAction<string>) {
+      state.clientID = action.payload;
     }
   },
 });
 
-export const { setUserData, setAccessToken } = userSlice.actions;
+export const { setUserData, setAccessToken, setClientID } = userSlice.actions;
+
 export default userSlice.reducer;
 
 
@@ -46,6 +55,7 @@ export function setUserDataThunk(
     document.cookie = `userFirstName=${data.name}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userLastName=${data.lastname}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userEmail=${data.email}; SameSite=Strict; Secure; path=/`;
+    document.cookie = `client_id=${data.clid}; SameSite=Strict; Secure; path=/`;
     dispatch(setUserData(data));
   };
 }
@@ -56,5 +66,14 @@ export function setAccessTokenThunk(
   return async function setTokenThunk(dispatch) {
     localStorage.setItem('accessToken', token);
     dispatch(setAccessToken(token));
+  };
+}
+
+export function setClientIDThunk(
+  id: string,
+): ThunkAction<void, RootState, unknown, Action> {
+  return async function setIDThunk(dispatch) {
+    localStorage.setItem('clientID', id);
+    dispatch(setClientID(id));
   };
 }

@@ -27,6 +27,7 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
             name: '',
             lastname: '',
             email: '',
+            clid: '',
         });
     };
 
