@@ -15,7 +15,7 @@ interface Props {
     isSidebarExpanded: boolean;
     setIsSidebarExpanded: (value: boolean) => void;
 };
-// function Navbar({ userData, setUserData }: Props) {
+
 function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded }: Props) {
     const navigate = useNavigate();
     const location = useLocation();
