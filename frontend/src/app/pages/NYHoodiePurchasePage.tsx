@@ -1,49 +1,56 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCart } from './CartContext';
 
 export function PurchasePageNYH() {
   const { color } = useParams<{ color: string }>(); // Get the color from URL
   const [selectedSize, setSelectedSize] = useState<string>('S');
-  const [cart, setCart] = useState<{ color: string; size: string; imageUrl: string }[]>([]);
 
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
   const hoodies = {
     folder: '/clothes/shop1/hoodies/',
     suffix: '_h.jpg',
+    price: 200, // Add price here
     colorTranslations: {
       black: 'czarna',
       blue: 'niebieska',
       brown: 'brązowa',
       grey: 'szara',
       white: 'biała',
-    } as const, // This ensures that colorTranslations has constant keys
+    } as const,
   };
 
-  // Typing selectedColor explicitly to be one of the keys of colorTranslations
-  const selectedColor: keyof typeof hoodies.colorTranslations = 
-    (color && (color in hoodies.colorTranslations)) ? color as keyof typeof hoodies.colorTranslations : 'black'; // Fallback to 'black'
+  const selectedColor: keyof typeof hoodies.colorTranslations =
+    color && color in hoodies.colorTranslations
+      ? (color as keyof typeof hoodies.colorTranslations)
+      : 'black'; // Fallback to 'black'
 
   const translatedColor = hoodies.colorTranslations[selectedColor];
+
+  const { addToCart } = useCart();
 
   const handleSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSize(event.target.value);
   };
 
   const handleAddToCart = () => {
-    // Ensure the selectedColor is a key of colorTranslations
     if (!selectedColor) {
       alert('Wybrano nieprawidłowy kolor!');
       return;
     }
 
     const selectedHoodie = {
-      color: selectedColor,
+      name: 'bluza',
+      color: translatedColor,
       size: selectedSize,
+      price: hoodies.price, // Include price
       imageUrl: `${hoodies.folder}${selectedColor}${hoodies.suffix}`,
     };
 
-    setCart([...cart, selectedHoodie]);
-    alert(`Dodano do koszyka: ${translatedColor} bluza w rozmiarze ${selectedSize}`);
+    addToCart(selectedHoodie);
+    alert(
+      `Dodano do koszyka: ${translatedColor} bluza w rozmiarze ${selectedSize} za ${hoodies.price} zł`
+    );
   };
 
   return (
@@ -59,7 +66,6 @@ export function PurchasePageNYH() {
         padding: '20px',
       }}
     >
-      {/* Updated caption */}
       <h1 style={{ marginBottom: '40px', fontSize: '2.5rem', fontWeight: 'bold' }}>
         Bluza - {translatedColor}
       </h1>
@@ -73,16 +79,18 @@ export function PurchasePageNYH() {
             width: '100%',
             height: '100%',
             objectFit: 'contain',
-            marginBottom: '20px',
+            marginBottom: '10px',
             border: '3px solid #FFBF00',
           }}
         />
+        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1E3A5F' }}>
+          {hoodies.price} zł
+        </p>
       </div>
 
-      {/* Size Selection */}
       <div style={{ marginTop: '20px' }}>
         <label htmlFor="size-select" style={{ fontSize: '1.2rem' }}>
-          Wybierz rozmiar: 
+          Wybierz rozmiar:
         </label>
         <select
           id="size-select"
@@ -93,7 +101,7 @@ export function PurchasePageNYH() {
             fontSize: '1rem',
             margin: '10px',
             borderRadius: '4px',
-            width: '65px', 
+            width: '65px',
           }}
         >
           {sizes.map((size) => (
@@ -104,7 +112,6 @@ export function PurchasePageNYH() {
         </select>
       </div>
 
-      {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
         style={{
@@ -120,8 +127,6 @@ export function PurchasePageNYH() {
       >
         Dodaj do koszyka
       </button>
-
     </div>
   );
 }
-

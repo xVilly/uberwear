@@ -205,6 +205,66 @@ def get_all_orders(db: Session = Depends(get_db), current_user: User = Depends(g
 
     return return_list
 
+@router.get("/orders/{order_id}")
+def get_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    products_ordered = db.query(ProductOrder).filter(ProductOrder.order_ID == order_id).all()
+    order_client = db.query(Client).filter(Client.client_ID == db_order.client_ID).first()
+    client_user = db.query(User).filter(User.user_ID == order_client.user_ID).first()
+    order_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    order_courier = db.query(Courier).filter(Courier.courier_ID == db_order.courier_ID).first()
+    courier_user = db.query(User).filter(User.user_ID == order_courier.user_ID).first()
+    order_address = db.query(Address).filter(Address.address_ID == db_order.address_ID).first()
+    products_list = []
+    for product_ordered in products_ordered:
+        product = db.query(Product).filter(Product.product_ID == product_ordered.product_ID).first()
+        shop = db.query(Shop).filter(Shop.shop_ID == product.shop_ID).first()
+        products_list.append({
+            'product': {
+                'id': product.product_ID,
+                'name': product.name,
+                'price': product.price,
+                'shop': {
+                    'id': shop.shop_ID,
+                    'name': shop.name
+                }
+            },
+            'ordered_amount': product_ordered.amount
+        })
+
+    return {
+        'id': db_order.order_ID,
+        'date': db_order.order_date,
+        'status': db_order.status,
+        'client': {
+            'id': order_client.client_ID,
+            'name': client_user.name,
+            'surname': client_user.surname
+        },
+        'payment': {
+            'id': order_payment.payment_ID,
+            'status': order_payment.status,
+            'method': order_payment.payment_method
+        },
+        'address': {
+            'street': order_address.street,
+            'city': order_address.city,
+            'postcode': order_address.postcode
+        },
+        'courier': {
+            'id': order_courier.courier_ID,
+            'name': courier_user.name,
+            'surname': courier_user.surname,
+            'delivery_transport': order_courier.delivery_transport,
+            'license_plate': order_courier.license_plate
+        },
+        'products': products_list,
+    }
+
+
 class ProductInput(BaseModel):
     id: int
     count: int

@@ -1,47 +1,51 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCart } from './CartContext'; // Assuming you are using a CartContext like in your hoodie component
 
 export function PurchasePageNYSw() {
   const { color } = useParams<{ color: string }>(); // Get the color from URL
   const [selectedSize, setSelectedSize] = useState<string>('S');
-  const [cart, setCart] = useState<{ color: string; size: string; imageUrl: string }[]>([]);
-
+  
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  
   const sweatpants = {
     folder: '/clothes/shop1/sweatpants/',
     suffix: '_sw.jpg',
+    price: 150, // Add price for sweatpants
     colorTranslations: {
       black: 'czarne',
       brown: 'brązowe',
       grey: 'szare',
-    } as const, // This ensures that colorTranslations has constant keys
+    } as const,
   };
 
-  // Typing selectedColor explicitly to be one of the keys of colorTranslations
   const selectedColor: keyof typeof sweatpants.colorTranslations = 
     (color && (color in sweatpants.colorTranslations)) ? color as keyof typeof sweatpants.colorTranslations : 'black'; // Fallback to 'black'
 
   const translatedColor = sweatpants.colorTranslations[selectedColor];
+  
+  const { addToCart } = useCart(); // Assuming addToCart is defined in the context
 
   const handleSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSize(event.target.value);
   };
 
   const handleAddToCart = () => {
-    // Ensure the selectedColor is a key of colorTranslations
     if (!selectedColor) {
       alert('Wybrano nieprawidłowy kolor!');
       return;
     }
 
     const selectedSweatpants = {
-      color: selectedColor,
+      name: 'spodnie dresowe',
+      color: translatedColor,
       size: selectedSize,
+      price: sweatpants.price, // Include price here
       imageUrl: `${sweatpants.folder}${selectedColor}${sweatpants.suffix}`,
     };
 
-    setCart([...cart, selectedSweatpants]);
-    alert(`Dodano do koszyka: ${translatedColor} spodnie dresowe w rozmiarze ${selectedSize}`);
+    addToCart(selectedSweatpants); // Add to cart using the context
+    alert(`Dodano do koszyka: ${translatedColor} spodnie dresowe w rozmiarze ${selectedSize} za ${sweatpants.price} zł`);
   };
 
   return (
@@ -57,12 +61,10 @@ export function PurchasePageNYSw() {
         padding: '20px',
       }}
     >
-      {/* Updated caption */}
       <h1 style={{ marginBottom: '40px', fontSize: '2.5rem', fontWeight: 'bold' }}>
         Spodnie Dresowe - {translatedColor}
       </h1>
 
-      {/* Display the selected sweatpants */}
       <div style={{ marginTop: '40px', textAlign: 'center' }}>
         <img
           src={`${sweatpants.folder}${selectedColor}${sweatpants.suffix}`}
@@ -71,13 +73,15 @@ export function PurchasePageNYSw() {
             width: '100%',
             height: '100%',
             objectFit: 'contain',
-            marginBottom: '20px',
+            marginBottom: '10px',
             border: '3px solid #FFBF00',
           }}
         />
+        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1E3A5F' }}>
+          {sweatpants.price} zł
+        </p>
       </div>
 
-      {/* Size Selection */}
       <div style={{ marginTop: '20px' }}>
         <label htmlFor="size-select" style={{ fontSize: '1.2rem' }}>
           Wybierz rozmiar:
@@ -91,7 +95,7 @@ export function PurchasePageNYSw() {
             fontSize: '1rem',
             margin: '10px',
             borderRadius: '4px',
-            width: '65px', 
+            width: '65px',
           }}
         >
           {sizes.map((size) => (
@@ -102,7 +106,6 @@ export function PurchasePageNYSw() {
         </select>
       </div>
 
-      {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
         style={{
@@ -121,3 +124,4 @@ export function PurchasePageNYSw() {
     </div>
   );
 }
+    
