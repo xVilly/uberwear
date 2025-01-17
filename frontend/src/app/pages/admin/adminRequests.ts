@@ -30,3 +30,59 @@ export const requestDeleteOrder = async (accessToken: string, orderId: string) =
     });
     return response.json();
 }
+
+export const getCouriers = async (accessToken: string, index: number = 0, limit: number = 50) => {
+    const response = await fetch(`http://localhost:8000/admin/couriers?start_index=${index}&limit=${limit}`, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+    return response.json();
+}
+
+export const getCourierDetails = async (accessToken: string, courierId: string) => {
+    const response = await fetch(`http://localhost:8000/admin/couriers/${courierId}`, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+    return response.json();
+}
+
+
+export const requestActivateUser = async (accessToken: string, userId: string) => {
+    const response = await fetch(`http://localhost:8000/admin/${userId}/activate`, {
+        method: 'PATCH',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+    return response.json();
+}
+
+export const requestDeactivateUser = async (accessToken: string, userId: string) => {
+    const response = await fetch(`http://localhost:8000/admin/${userId}/deactivate`, {
+        method: 'PATCH',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+    return response.json();
+}
+
+export const getCourierOrders = async (accessToken: string, courierId: string) => {
+    const response = await fetch(`http://localhost:8000/courier/${courierId}/orders`, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+    return response.json();
+}

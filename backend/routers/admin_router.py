@@ -82,6 +82,30 @@ def get_couriers(
     
     return return_data
 
+@router.get("/admin/couriers/{courier_id}")
+def get_courier(courier_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    courier = db.query(Courier).filter(Courier.courier_ID == courier_id).first()
+    if not courier:
+        raise HTTPException(status_code=400, detail="Courier does not exist")
+    
+    user = db.query(User).filter(User.user_ID == courier.user_ID).first()
+
+    return_structure = {
+        "courier_ID": courier.courier_ID,
+        "user_ID": user.user_ID,
+        "name": user.name,
+        "surname": user.surname,
+        "email": user.email,
+        "phone": user.phone,
+        "created_at": user.created_at,
+        "status": user.status,
+        "last_login": user.last_login,
+        "delivery_transport": courier.delivery_transport,
+        "license_plate": courier.license_plate
+    }
+
+    return return_structure
+
 class CreateCourier(BaseModel):
     delivery_transport: str
     license_plate: str
@@ -128,3 +152,21 @@ def remove_courier(user_id: int, db: Session = Depends(get_db), user: User = Dep
     db.commit()
 
     return {"detail": "Courier removed"}
+
+@router.patch("/admin/{user_id}/activate")
+def activate_user(user_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    user = db.query(User).filter(User.user_ID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    user.status = "Active"
+    db.commit()
+    return {"detail": "User activated"}
+
+@router.patch("/admin/{user_id}/deactivate")
+def deactivate_user(user_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    user = db.query(User).filter(User.user_ID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist")
+    user.status = "Inactive"
+    db.commit()
+    return {"detail": "User deactivated"}

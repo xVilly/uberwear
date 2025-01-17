@@ -10,7 +10,7 @@ import { AccountPageFavBrands} from "./pages/AccountPageFavBrands";
 import { OfferPage} from "./pages/Offer";
 import { CartPage} from "./pages/Cart";
 import { AdminPanelPage } from "./pages/admin/AdminPanel";
-import {AdminCouriers} from "./pages/admin/AdminCouriers";
+import AdminCouriers from "./pages/admin/AdminCouriers";
 import AdminOrders from "./pages/admin/AdminOrders";
 import {AdminUsers} from "./pages/admin/AdminUsers";
 import {FashionBout} from "./pages/ShopFashionBout";
@@ -30,6 +30,7 @@ import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/admin/AdminData";
 import AccountPageData from "./pages/AccountPageData";
 import OrderDetails from "./pages/admin/OrderDetails";
+import CourierDetails from "./pages/admin/CourierDetails";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -38,11 +39,14 @@ const routes = createBrowserRouter(
       <Route path="admin">
         <Route index element={<AdminPanelPage />} />
         <Route path="data" element={<AdminData />} />
-        <Route path="couriers" element={<AdminCouriers />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="orders">
           <Route index element={<AdminOrders />} />
           <Route path=":orderId" element={<OrderDetails />} />          
+        </Route>
+        <Route path="couriers">
+          <Route index element={<AdminCouriers />} />
+          <Route path=":courierId" element={<CourierDetails />} />
         </Route>
       </Route>
 
