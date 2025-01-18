@@ -54,6 +54,9 @@ const AdminOrders = ({userData}: {userData : UserData}) => {
 
                 {/* Orders */}
                 <div className="flex flex-col gap-4">
+                    {ordersList.length === 0 && (
+                        <p className="text-center text-gray-500">Brak zamówień</p>
+                    )}
                     {ordersList.map(order => (
                         <Link
                             to={`/admin/orders/${order.id}`}

@@ -313,17 +313,6 @@ export const deliverOrder = async (orderId: string) => {
   return response.json();
 };
 
-// Admin Tools
-export const getClients = async () => {
-  const response = await fetch('http://localhost:8000/admin/clients', {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-    },
-  });
-  return response.json();
-};
-
 export const getCouriers = async () => {
   const response = await fetch('http://localhost:8000/admin/couriers', {
     method: 'GET',

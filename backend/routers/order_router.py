@@ -28,7 +28,7 @@ def get_orders_by_client(client_id: int, db: Session = Depends(get_db), current_
     if not db_client:
         raise HTTPException(status_code=404, detail="Client not found")
     
-    if current_user.user_type != "admin" and db_client.user_ID != current_user.user_ID:
+    if current_user.user_type != UserType.Admin and db_client.user_ID != current_user.user_ID:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     orders = db.query(Order).filter(Order.client_ID == client_id).all()

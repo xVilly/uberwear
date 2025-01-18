@@ -149,8 +149,11 @@ function CourierDetails({ userData }: { userData: UserData }) {
                                 <h2 className="text-xl font-bold">Zamówienia obecnie obsługiwane przez kuriera</h2>
                             </div>
                             <div className="flex flex-wrap justify-center items-center gap-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 600px)' }}>
+                                {courierOrders.length === 0 && (
+                                    <p className="text-center text-gray-500">Brak zamówień</p>
+                                )}
                                 {courierOrders.map(order => (
-                                    <div className="flex flex-col items-between bg-cyan-200 bg-opacity-80 shadow-lg mb-5 mt-2 rounded-lg p-2 hover:scale-105 transition-all duration-200 cursor-pointer"
+                                    <div className="flex flex-col w-1/4 items-between bg-cyan-200 bg-opacity-80 shadow-lg mb-5 mt-2 rounded-lg p-2 hover:scale-105 transition-all duration-200 cursor-pointer"
                                         key={order.id}
                                         onClick={()=> navigate(`/admin/orders/${order.id}`)} >
                                         <div className="flex text-center font-light space-x-2">

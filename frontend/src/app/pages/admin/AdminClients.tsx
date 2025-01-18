@@ -1,49 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AdminSidebar } from './Sidebar';
-import { getOrders } from '../../requests';
 import { UserData } from '../../redux/userSlice';
 import { RootState } from '../../store/mainStore';
 import { connect } from 'react-redux';
 import { Order } from '../../models/Order';
-import { DeliveryIcon, MailIcon, PhoneIcon } from '../../components/SVG';
+import { DeliveryIcon, LocationIcon, MailIcon, PhoneIcon } from '../../components/SVG';
 import { Courier } from '../../models/Courier';
-import { getCouriers } from './adminRequests';
+import { getClients, getCouriers } from './adminRequests';
+import { Client } from '../../models/Client';
 
-export const translateStatus = (status: string) => {
-    switch (status) {
-        case 'Pending':
-            return 'Oczekujące na płatność';
-        case 'Shipped':
-            return 'W trakcie realizacji';
-        case 'Delivered':
-            return 'Dostarczone';
-        case 'Canceled':
-            return 'Anulowane';
-        default:
-            return status;
-    }
-}
+const AdminClients = ({userData}: {userData : UserData}) => {
 
-const AdminCouriers = ({userData}: {userData : UserData}) => {
-
-    const [couriersList, setCouriersList] = useState<Courier[]>([]);
+    const [clientList, setClientList] = useState<Client[]>([]);
     const [startIndex, setStartIndex] = useState(0);
     const [pageSize] = useState(10); // Number of items per page
 
 
-    const fetchCouriers = async (start: number) => {
+    const fetchClients = async (start: number) => {
         try {
-          const couriers = await getCouriers(userData.access, start, pageSize);
-          setCouriersList(couriers);
+          const clients = await getClients(userData.access, start, pageSize);
+          setClientList(clients);
         } catch (error) {
-          console.error('Failed to fetch couriers:', error);
+          console.error('Failed to fetch clients:', error);
         }
     };
 
 
     useEffect(() => {
-        fetchCouriers(startIndex);
+        fetchClients(startIndex);
     }, [startIndex]);
 
     const handleNextPage = () => {
@@ -65,36 +50,32 @@ const AdminCouriers = ({userData}: {userData : UserData}) => {
             <div className="flex-1 p-10">
                 {/* Caption */}
                 <h1 className="text-4xl mb-8 relative font-bold text-center border-b-yellow-400 border-b-2">
-                    Dostępni Kurierzy
+                    Wszyscy klienci
                 </h1>
 
                 {/* Orders */}
                 <div className="flex flex-col gap-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-                    {couriersList.length === 0 && (
-                        <p className="text-center text-gray-500">Brak kurierów</p>
+                    {clientList.length === 0 && (
+                        <p className="text-center text-gray-500">Brak klientów</p>
                     )}
-                    {couriersList.map(courier => (
+                    {clientList.map(client => (
                         <Link
-                            to={`/admin/couriers/${courier.courier_ID}`}
-                            key={courier.courier_ID}
+                            to={`/admin/clients/${client.client_ID}`}
+                            key={client.client_ID}
                             className="flex items-center justify-between p-4 bg-white shadow-md rounded-md hover:shadow-lg transition-all duration-200"
                         >
                             <div>
-                                <h2 className="text-xl font-bold">{courier.name} {courier.surname} (ID:{courier.courier_ID})</h2>
-                                {courier.delivery_transport === 'Car' ?
-                                    <p className="text-sm text-gray-500">{courier.delivery_transport} - {courier.license_plate}</p>
-                                :
-                                    <p className="text-sm text-gray-500">{courier.delivery_transport.length > 0 ? courier.delivery_transport : 'Other transport'}</p>
-                                }
+                                <h2 className="text-xl font-bold">{client.name} {client.surname} (ID:{client.client_ID})</h2>
+                                <p className="text-sm text-gray-500">{client.status === 'Active' ? 'Aktywny' : 'Nieaktywny'}, {client.loyalty_points} punktów</p>
                             </div>
                             <div className="flex-col text-right">
                                 <div className="flex space-x-1 justify-end">
                                     <PhoneIcon width={20} height={20} color="text-gray-500" />
-                                    <p className="text-sm text-gray-500">{courier.phone}</p>
+                                    <p className="text-sm text-gray-500">{client.phone}</p>
                                 </div>
                                 <div className="flex space-x-1 justify-end">
                                     <MailIcon width={20} height={20} color="text-gray-500" />
-                                    <p className="text-sm text-gray-500">{courier.email}</p>
+                                    <p className="text-sm text-gray-500">{client.email}</p>
                                 </div>
                             </div>
                         </Link>
@@ -112,7 +93,7 @@ const AdminCouriers = ({userData}: {userData : UserData}) => {
                     </button>
                     <button
                         onClick={handleNextPage}
-                        disabled={couriersList.length < pageSize}
+                        disabled={clientList.length < pageSize}
                         className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:hover:scale-100 hover:scale-110 transition-all duration-200 disabled:opacity-50"
                     >
                         Następna strona
@@ -128,4 +109,4 @@ const AdminCouriers = ({userData}: {userData : UserData}) => {
 const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
 
 
-export default connect(mapStateToProps)(AdminCouriers);
+export default connect(mapStateToProps)(AdminClients);

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginRequest, getUserInfo, getClientID } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { setUserDataThunk, UserData } from '../redux/userSlice';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   userData: UserData;
@@ -34,10 +35,13 @@ function LogInPage({userData, setUserData}: Props) {
 
         if (userInfo.user.user_type === 'Admin') {
           navigate("/admin");
+          enqueueSnackbar('Zalogowano jako administrator, witaj ' + userInfo.user.name + '!', { variant: 'success' });
         } else if (userInfo.user.user_type === 'Courier') {
           navigate("/courier");
+          enqueueSnackbar('Zalogowano jako kurier, witaj '+ userInfo.user.name + '!', { variant: 'success' });
         } else if (userInfo.user.user_type === 'Client') {
           navigate("/account/data");
+          enqueueSnackbar('Zalogowano, witaj ' + userInfo.user.name + '!', { variant: 'success' });
         }
       }
     } catch (error) {

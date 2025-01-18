@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {ExpandableMenu} from './ExpandableMenu';
 import { useState } from 'react';
+import { enqueueSnackbar } from 'notistack';
  
 interface Props {
     userData: UserData;
@@ -29,6 +30,8 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
             email: '',
             clid: '',
         });
+        navigate('/');
+        enqueueSnackbar('Wylogowano pomyślnie', { variant: 'success' });
     };
 
 

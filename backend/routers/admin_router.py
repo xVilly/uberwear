@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from models.tables.address import Address
 from sqlalchemy.orm import Session
 
 from models.tables.client import Client
@@ -45,6 +46,38 @@ def get_clients(
         return_data.append(client)
     
     return return_data
+
+@router.get("/admin/clients/{client_id}")
+def get_client(client_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_active_admin)):
+    client = db.query(Client).filter(Client.client_ID == client_id).first()
+    if not client:
+        raise HTTPException(status_code=400, detail="Client does not exist")
+    
+    user = db.query(User).filter(User.user_ID == client.user_ID).first()
+
+    address = db.query(Address).filter(Address.address_ID == client.address_ID).first()
+
+    return_structure = {
+        "client_ID": client.client_ID,
+        "user_ID": user.user_ID,
+        "name": user.name,
+        "surname": user.surname,
+        "email": user.email,
+        "phone": user.phone,
+        "created_at": user.created_at,
+        "status": user.status,
+        "last_login": user.last_login,
+        "loyalty_points": client.loyalty_points,
+        "address": {
+            "address_ID": address.address_ID,
+            "street": address.street,
+            "city": address.city,
+            "postcode": address.postcode,
+            "district": address.district
+        }
+    }
+
+    return return_structure
 
 @router.get("/admin/couriers")
 def get_couriers(

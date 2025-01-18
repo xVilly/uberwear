@@ -18,7 +18,7 @@ export function AdminSidebar() {
                         to="/admin/orders"
                         className="no-underline text-gray-100 text-lg font-medium group-hover:text-gray-300 transition-all duration-200"
                     >
-                        Pokaż zamówienia
+                        Lista zamówień
                     </Link>
                 </li>
                 <li className="mb-4 group hover:translate-x-4 transition-all duration-200">
@@ -26,15 +26,15 @@ export function AdminSidebar() {
                         to="/admin/couriers"
                         className="no-underline text-gray-100 text-lg font-medium group-hover:text-gray-300 transition-all duration-200"
                     >
-                        Pokaż kurierów
+                        Lista kurierów
                     </Link>
                 </li>
                 <li className="mb-4 group hover:translate-x-4 transition-all duration-200">
                     <Link
-                        to="/admin/users"
+                        to="/admin/clients"
                         className="no-underline text-gray-100 text-lg font-medium group-hover:text-gray-300 transition-all duration-200"
                     >
-                        Pokaż użytkowników
+                        Lista klientów
                     </Link>
                 </li>
             </ul>

@@ -97,7 +97,8 @@ function OrderDetails({ userData }: { userData: UserData }) {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-xl font-bold">Klient:</span>
-                                <span>{order.client.name} {order.client.surname}</span>
+                                <span className="cursor-pointer hover:scale-105 transition-all duration-200"
+                                onClick={()=> navigate(`/admin/clients/${order.client.id}`)}>{order.client.name} {order.client.surname}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-xl font-bold">Płatność:</span>
@@ -105,7 +106,10 @@ function OrderDetails({ userData }: { userData: UserData }) {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-xl font-bold">Kurier:</span>
-                                <span>{order.courier.name} {order.courier.surname} ({order.courier.license_plate})</span>
+                                <span className="cursor-pointer hover:scale-105 transition-all duration-200" 
+                                onClick={()=> navigate(`/admin/couriers/${order.courier.id}`)}>
+                                    {order.courier.name} {order.courier.surname} {order.courier.license_plate ? `(${order.courier.license_plate})`:''}
+                                </span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-xl font-bold">Adres dostawy:</span>
