@@ -24,8 +24,9 @@ export const loginRequest = async (email: string,
     },
     body: JSON.stringify({ email, password }),
   });
+  const status = response.status;
   const data = await response.json();
-  return data;
+  return { status, data };
 };
 
 export const getUserInfo = async (accessToken: string) => {

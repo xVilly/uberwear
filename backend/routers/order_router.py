@@ -247,7 +247,8 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
         'payment': {
             'id': order_payment.payment_ID,
             'status': order_payment.status,
-            'method': order_payment.payment_method
+            'method': order_payment.payment_method,
+            'price': order_payment.price
         },
         'address': {
             'street': order_address.street,
@@ -273,6 +274,9 @@ class OrderInput(BaseModel):
     products: list[ProductInput]
     payment_method: str
 
+class ReturnOrderInput(BaseModel):
+    products: list[ProductInput]
+
 # Utworzenie zamówienia - wymagany zalogowany client
 @router.post("/orders")
 def make_order(input: OrderInput, db: Session = Depends(get_db), current_client: Client = Depends(get_current_active_client)):
@@ -290,6 +294,8 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
             'product': db_product.__dict__.copy(),
             'count': product.count
         })
+
+        db_product.amount -= product.count
 
     # Wybranie kuriera do dostawy
     courier = choose_courier(db)
@@ -311,7 +317,7 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
     new_order = Order(
         order_date=datetime.now(),
         client_ID=current_client.client_ID,
-        status="Pending",
+        status="Shipped",
         courier_ID=courier.courier_ID,
         payment_ID=new_payment.payment_ID,
         address_ID=current_client.address_ID
@@ -346,15 +352,15 @@ def pay_order(order_id: int, db: Session = Depends(get_db), current_client: Clie
     db_order = db.query(Order).filter(Order.order_ID == order_id).first()
     if not db_order:
         raise HTTPException(status_code=404, detail="Order not found")
-    
-    if db_order.status != "Pending":
-        raise HTTPException(status_code=400, detail="Order already paid")
-    
-    db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
-    db_payment.status = "Done"
-    db.commit()
 
-    db_order.status = "Shipped"
+    db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    if db_payment.status != "Awaits":
+        raise HTTPException(status_code=400, detail="Payment already done")
+
+    db_payment.status = "Done"
+
+    if db_order.status != "Shipped":
+        db_order.status = "Shipped"
     db.commit()
 
     return {
@@ -362,6 +368,11 @@ def pay_order(order_id: int, db: Session = Depends(get_db), current_client: Clie
         "order": {
             "id": db_order.order_ID,
             "status": db_order.status
+        },
+        "payment": {
+            "id": db_payment.payment_ID,
+            "status": db_payment.status,
+            "method": db_payment.payment_method
         }
     }
 
@@ -380,7 +391,7 @@ def cancel_order(order_id: int,
     if db_order.status == "Canceled":
         raise HTTPException(status_code=400, detail="Order already canceled")
     
-    if db_order.status != "Pending":
+    if db_order.status != "Finalized":
         raise HTTPException(status_code=400, detail="Order already paid and cannot be cancelled")
     
     db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
@@ -391,7 +402,7 @@ def cancel_order(order_id: int,
     db.commit()
 
     return {
-        "message": "Order canceled successfully",
+        "message": "Order cancelled successfully",
         "order": {
             "id": db_order.order_ID,
             "status": db_order.status
@@ -430,6 +441,56 @@ def deliver_order(order_id: int, db: Session = Depends(get_db), current_user: Us
 
     return {
         "message": "Order delivered successfully",
+        "order": {
+            "id": db_order.order_ID,
+            "status": db_order.status
+        }
+    }
+
+
+# Partially return orders by specifying product IDs and amounts in request body
+# The products are removed from order and added back to shop stock
+@router.put("/orders/{order_id}/return")
+def return_order(order_id: int, input: ReturnOrderInput, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_client)):
+    db_order = db.query(Order).filter(Order.order_ID == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if db_order.status == "Canceled":
+        raise HTTPException(status_code=400, detail="Order already canceled")
+    
+    if db_order.status == "Finalized":
+        raise HTTPException(status_code=400, detail="Order already finalized")  
+    
+    for product in input.products:
+        db_product_order = db.query(ProductOrder).filter(ProductOrder.order_ID == order_id).filter(ProductOrder.product_ID == product.id).first()
+        if not db_product_order:
+            raise HTTPException(status_code=404, detail=f"Product {product.id} not found in order")
+        
+        count = product.count
+        if db_product_order.amount < product.count:
+            count = db_product_order.amount
+        
+        # Update the amount of the product in the order (or delete if <=0)
+        db_product_order.amount -= count
+        if db_product_order.amount <= 0:
+            db.delete(db_product_order)
+
+        db_product = db.query(Product).filter(Product.product_ID == product.id).first()
+        if not db_product:
+            raise HTTPException(status_code=404, detail=f"Product {product.id} not found")
+        
+        
+        # Update the payment amount of the order
+        db_payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+        db_payment.price -= db_product.price * count
+        
+        # Update the stock of the shop
+        db_product.amount += product.count
+        db.commit()
+
+    return {
+        "message": "Order partially returned successfully",
         "order": {
             "id": db_order.order_ID,
             "status": db_order.status

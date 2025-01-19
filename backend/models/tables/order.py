@@ -6,7 +6,7 @@ class Order(Base):
 
     order_ID = Column(Integer, primary_key=True, index=True, autoincrement=True)
     order_date = Column(Date)
-    status = Column(Enum('Pending', 'Shipped', 'Delivered', 'Canceled'))
+    status = Column(Enum('Pending', 'Shipped', 'Delivered', 'Canceled', 'Finalized'))
     courier_ID = Column(Integer, index=True)
     payment_ID = Column(Integer, index=True)
     address_ID = Column(Integer, index=True)

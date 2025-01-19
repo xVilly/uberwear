@@ -19,7 +19,11 @@ function LogInPage({userData, setUserData}: Props) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const data = await loginRequest(email, password);
+      const {status, data} = await loginRequest(email, password);
+      if (status === 400) {
+        enqueueSnackbar('Logowanie nieudane - błędne dane', { variant: 'error' });
+        return;
+      }
       if (data.access_token) {
         const userInfo = await getUserInfo(data.access_token);
         const clientID = await getClientID(data.access_token);
@@ -46,6 +50,7 @@ function LogInPage({userData, setUserData}: Props) {
       }
     } catch (error) {
       console.error('Login failed:', error);
+      enqueueSnackbar('Logowanie nieudane - brak odpowiedzi serwera', { variant: 'error' });
     }
   };
 
