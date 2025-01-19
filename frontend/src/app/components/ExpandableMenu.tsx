@@ -64,6 +64,9 @@ export function ExpandableMenu({ isExpanded, setIsExpanded }: { isExpanded: bool
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <MenuItem icon="🏠" label="Strona główna" isExpanded={isExpanded} />
           </Link>
+          <Link to="/account/data" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem icon="👨🏻" label="Twoje konto" isExpanded={isExpanded} />
+          </Link>
 
           <Link to="/about" style={{ textDecoration: 'none', color: 'inherit' }}>
             <MenuItem icon="ℹ️" label="O nas" isExpanded={isExpanded} />

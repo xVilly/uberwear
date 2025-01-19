@@ -13,6 +13,7 @@ type CartContextType = {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (index: number) => void;
+  clearCart: () => void;
 };
 
 // Define the CartProviderProps to explicitly type `children`
@@ -30,6 +31,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   const [cart, setCart] = useState<CartItem[]>(loadCartFromStorage);
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem('cart');
+  };
 
   // Store the cart data in localStorage whenever it changes
   useEffect(() => {
@@ -47,7 +52,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart}}>
       {children}
     </CartContext.Provider>
   );

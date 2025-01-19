@@ -25,6 +25,7 @@ import { PurchasePageNYH} from './pages/NYHoodiePurchasePage';
 import { PurchasePageNYSw} from './pages/NYSweatPantsPurchasePage';
 import { PurchasePageTee } from './pages/NYTeePurchasePage';
 import { AddressFillingPage } from "./pages/AddressFillPage";
+import { PaymentPage } from "./pages/PaymentPage";
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/admin/AdminData";
 import AccountPageData from "./pages/AccountPageData";
@@ -75,6 +76,7 @@ const routes = createBrowserRouter(
       <Route path="/purchase/sweatpants/:color" element={<PurchasePageNYSw />} />
       <Route path="/purchase/tees/:color" element={<PurchasePageTee />} />
       <Route path="/purchase/filladdress" element={<AddressFillingPage />} />
+      <Route path="/purchase/payment" element={<PaymentPage />} />
     </Route>
   )
 );

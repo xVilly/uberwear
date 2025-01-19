@@ -137,7 +137,8 @@ export function CartPage() {
             fontWeight: 'bold',
             fontSize: '1.2rem',
           }}
-          onClick={() => navigate('/purchase/filladdress')}
+          //passing price to address fill page
+          onClick={() => navigate('/purchase/filladdress', { state: { cart, totalPrice } })}
         
 
         >

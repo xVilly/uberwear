@@ -6,7 +6,6 @@ import { setUserDataThunk, UserData} from '../redux/userSlice';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
 import {Outlet, useLocation, useNavigate } from 'react-router-dom';
-import {ExpandableMenu} from './ExpandableMenu';
 import { useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
  
@@ -67,6 +66,7 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
 };
 
     const renderLoginLabel = () => {
+        const isCartPage = location.pathname === '/cart';
         //if (currentUserLoading) {
         if (false) {
             return (
@@ -91,14 +91,29 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
                 </button>
             )
         } else {
-            return (<div className="flex flex-row space-x-4 items-center">
-                <div className="font-light text-2xl cursor-pointer" onClick={() => userData.type === 'Admin' ? navigate('/admin') : navigate('/account/data')}>
-                    Witaj, {userData.name}
-                </div>
-                <button className="text-xl border-2 border-[#FFBF00] text-white font-playfair py-2 px-4 rounded-full shadow-md" onClick={() => onLogout()} >
+            return (
+                <div className="flex flex-row space-x-4 items-center">
+                {/* Hide "Witaj" on the cart page */}
+                {!isCartPage && (
+                    <div
+                        className="font-light text-2xl cursor-pointer"
+                        onClick={() =>
+                            userData.type === 'Admin'
+                                ? navigate('/admin')
+                                : navigate('/account/data')
+                        }
+                    >
+                        Witaj, {userData.name}
+                    </div>
+                )}
+                <button
+                    className="text-xl border-2 border-[#FFBF00] text-white font-playfair py-2 px-4 rounded-full shadow-md"
+                    onClick={() => onLogout()}
+                >
                     Wyloguj
                 </button>
-            </div>)
+            </div>
+            );
         }
     }
 
@@ -171,6 +186,8 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
                                         {renderOffer()}
                                         {renderAdminButton()}
                                         {renderCourierButton()}
+                                        {renderLoginLabel()}
+
                                     </div>
                                 </div>
                             </div>

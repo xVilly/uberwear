@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useCart } from './CartContext'; // Importing the useCart hook
+import { enqueueSnackbar } from 'notistack';
 
 export function AddressFillingPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { cart } = useCart(); // Accessing the cart from context
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,6 +27,11 @@ export function AddressFillingPage() {
     e.preventDefault();
     console.log('Address data submitted:', formData);
   };
+
+  //Checking if all fields are filled
+  const isFormValid = Object.values(formData).every((field) => field.trim() !== ''); 
+  // Calculate total price based on cart items
+  const totalPrice = cart.reduce((acc, item) => acc + item.price, 0);
 
   return (
     <div
@@ -147,7 +158,9 @@ export function AddressFillingPage() {
         </div>
 
         <button
+
           type="submit"
+          onClick={() => navigate('/purchase/payment', { state: { totalPrice } })}
           style={{
             width: '100%',
             padding: '15px',
@@ -155,14 +168,60 @@ export function AddressFillingPage() {
             color: '#1E3A5F',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer',
+            cursor: isFormValid? 'pointer' : 'not-allowed',
             fontWeight: 'bold',
             fontSize: '1.2rem',
           }}
+          disabled={!isFormValid}
         >
           Zatwierdź
         </button>
       </form>
+
+      {/* Cart Summary */}
+
+        <div
+          style={{
+            width: '80%',
+            maxWidth: '400px',
+            background: '#FFFFFF',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            marginTop: '30px',
+          }}
+        >
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '15px' }}>Podsumowanie koszyka</h2>
+          <div>
+            {cart.map((item, index) => (
+              <div key={index} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
+                {/* Image */}
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    marginRight: '15px',
+                  }}
+                />
+                {/* Item details */}
+                <div>
+                  <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    {item.color} {item.name} - {item.size}
+                  </p>
+                  <p>{item.price} zł</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '15px' }}>
+            Całkowita cena: {totalPrice} zł
+          </h3>
+        </div>
+
     </div>
   );
 }
