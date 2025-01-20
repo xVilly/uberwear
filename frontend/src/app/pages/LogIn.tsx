@@ -5,6 +5,7 @@ import { loginRequest, getUserInfo, getClientID } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { setUserDataThunk, UserData } from '../redux/userSlice';
 import { enqueueSnackbar } from 'notistack';
+import { useCart } from './CartContext';
 
 interface Props {
   userData: UserData;
@@ -15,6 +16,7 @@ function LogInPage({userData, setUserData}: Props) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { clearCart } = useCart();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -36,6 +38,7 @@ function LogInPage({userData, setUserData}: Props) {
           access: data.access_token,
           clid: clientID
         });
+        clearCart();
 
         if (userInfo.user.user_type === 'Admin') {
           navigate("/admin");

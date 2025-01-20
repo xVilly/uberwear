@@ -140,50 +140,60 @@ export function PaymentPage() {
           Zatwierdź płatność
         </button>
       </form>
-      
+
+      {/* Cart Summary */}
+
       <div
-        style={{
-          width: '80%',
-          maxWidth: '400px',
-          background: '#FFFFFF',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-          marginTop: '30px',
-        }}
-      >
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '15px' }}>Podsumowanie koszyka</h2>
-        <div>
-          {cart.map((item, index) => (
-            <div key={index} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
-              {/* Image */}
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  marginRight: '15px',
-                }}
-              />
-              {/* Item details */}
-              <div>
-                <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-                  {item.color} {item.name} - {item.size}
-                </p>
-                <p>{item.price} zł</p>
+      style={{
+        minHeight: '50vh',
+        display: 'flex',
+        padding: '20px',
+        position: 'fixed',
+        right: '270px'
+      }}
+    >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '400px',
+            background: '#FFFFFF',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            marginTop: '70px',
+          }}
+        >
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '15px' }}>Podsumowanie koszyka</h2>
+          <div>
+            {cart.map((item, index) => (
+              <div key={index} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
+                {/* Image */}
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                  }}
+                />
+                {/* Item details */}
+                <div>
+                  <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    {item.color} {item.name} - {item.size}
+                  </p>
+                  <p>{item.price} zł</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '15px' }}>
+            Całkowita cena: {totalPrice} zł
+          </h3>
         </div>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '15px' }}>
-          Całkowita cena: {totalPrice} zł
-        </h3>
         </div>
-
-
+      
     </div>
   );
 }

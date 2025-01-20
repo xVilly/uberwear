@@ -20,9 +20,7 @@ export function Layout()
         location.pathname === '/offer/nyclothes/hoodies' ||
         location.pathname === '/offer/nyclothes/sweatpants' ||
         location.pathname === '/offer/nyclothes/tees' ||
-        location.pathname.includes('/purchase/hoodie/') ||
-        location.pathname.includes('/purchase/sweatpants/') ||
-        location.pathname.includes('/purchase/tees/') || 
+        location.pathname.includes('/purchase/') ||
         location.pathname.includes('/cart') ;
         console.log(color);  
 

@@ -180,15 +180,24 @@ export function AddressFillingPage() {
 
       {/* Cart Summary */}
 
+      <div
+      style={{
+        minHeight: '50vh',
+        display: 'flex',
+        padding: '20px',
+        position: 'fixed',
+        right: '270px'
+      }}
+    >
         <div
           style={{
-            width: '80%',
+            width: '100%',
             maxWidth: '400px',
             background: '#FFFFFF',
             padding: '20px',
             borderRadius: '8px',
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-            marginTop: '30px',
+            marginTop: '70px',
           }}
         >
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '15px' }}>Podsumowanie koszyka</h2>
@@ -204,7 +213,7 @@ export function AddressFillingPage() {
                     height: '60px',
                     objectFit: 'cover',
                     borderRadius: '8px',
-                    marginRight: '15px',
+                    marginRight: '',
                   }}
                 />
                 {/* Item details */}
@@ -221,7 +230,7 @@ export function AddressFillingPage() {
             Całkowita cena: {totalPrice} zł
           </h3>
         </div>
-
+        </div>
     </div>
   );
 }
