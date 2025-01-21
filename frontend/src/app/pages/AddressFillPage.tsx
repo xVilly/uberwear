@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from './CartContext'; // Importing the useCart hook
+import { useCart } from './CartContext'; 
 import { enqueueSnackbar } from 'notistack';
 
 export function AddressFillingPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { cart } = useCart(); // Accessing the cart from context
+  const { cart } = useCart(); 
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -129,8 +129,19 @@ export function AddressFillingPage() {
             type="text"
             name="postalCode"
             value={formData.postalCode}
-            onChange={handleChange}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              let value = event.target.value.replace(/\D/g, ''); // non-digit characters removal
+              if (value.length > 2) {
+                value = value.slice(0, 2) + '-' + value.slice(2); // dash after 2 characters
+              }
+              if (value.length > 6) {
+                value = value.slice(0, 6); // 6 characters max 
+              }
+              setFormData({ ...formData, postalCode: value }); 
+            }}
+            maxLength={6} 
             required
+            placeholder="xx-xxx" 
             style={{
               width: '100%',
               padding: '10px',
@@ -182,11 +193,11 @@ export function AddressFillingPage() {
 
       <div
       style={{
-        minHeight: '50vh',
+        height: 'auto',
         display: 'flex',
         padding: '20px',
         position: 'fixed',
-        right: '270px'
+        right: '240px'
       }}
     >
         <div

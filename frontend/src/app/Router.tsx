@@ -26,12 +26,14 @@ import { PurchasePageNYSw} from './pages/NYSweatPantsPurchasePage';
 import { PurchasePageTee } from './pages/NYTeePurchasePage';
 import { AddressFillingPage } from "./pages/AddressFillPage";
 import { PaymentPage } from "./pages/PaymentPage";
+import { DeliveryPage } from "./pages/DeliveryPage";
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/admin/AdminData";
 import AccountPageData from "./pages/AccountPageData";
 import OrderDetails from "./pages/admin/OrderDetails";
 import CourierDetails from "./pages/admin/CourierDetails";
 import ClientDetails from "./pages/admin/ClientDetails";
+import { isMapIterator } from "util/types";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -77,6 +79,7 @@ const routes = createBrowserRouter(
       <Route path="/purchase/tees/:color" element={<PurchasePageTee />} />
       <Route path="/purchase/filladdress" element={<AddressFillingPage />} />
       <Route path="/purchase/payment" element={<PaymentPage />} />
+      <Route path="/purchase/delivery" element={<DeliveryPage />} />
     </Route>
   )
 );
