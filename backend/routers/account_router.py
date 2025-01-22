@@ -184,11 +184,12 @@ def update_user(form: UserUpdate, db: Session = Depends(get_db), user: User = De
     
 @router.get("/user/LoyaltyPoints")
 def get_loyalty_points(db: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
-    if user.user_type == UserType.Client:
-        client = get_client(db, user.user_ID)
+    client = db.query(Client).filter(Client.user_ID == user.user_ID).first()
+    if client:
         return {
             "loyalty_points": client.loyalty_points
         }
-    
-    
-    
+    else:
+        return {
+            "loyalty_points": 0
+        }
