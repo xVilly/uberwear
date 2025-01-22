@@ -21,7 +21,9 @@ export function Layout()
         location.pathname === '/offer/nyclothes/sweatpants' ||
         location.pathname === '/offer/nyclothes/tees' ||
         location.pathname.includes('/purchase/') ||
-        location.pathname.includes('/cart') ;
+        location.pathname.includes('/cart') || 
+        location.pathname.includes('/contact') ||
+        location.pathname.includes('/about') ;
         console.log(color);  
 
     return (<>
