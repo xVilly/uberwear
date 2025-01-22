@@ -10,6 +10,7 @@ export interface UserData {
   lastname: string;
   email: string;
   clid : string;
+  loyalty_points: string;
 }
 
 const userSlice = createSlice({
@@ -17,6 +18,7 @@ const userSlice = createSlice({
   initialState: {
     accessToken: (typeof document !== 'undefined' ? localStorage.getItem('accessToken') : ""),
     clientID: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
+    loyaltyPoints: (typeof document !== 'undefined' ? parseCookie('loyalty_points') : ""),
     user: {
       access: (typeof document !== 'undefined' ? parseCookie('accessToken') : ""),
       type: (typeof document !== 'undefined' ? parseCookie('userType') : ""),
@@ -24,6 +26,7 @@ const userSlice = createSlice({
       lastname: (typeof document !== 'undefined' ? parseCookie('userLastName') : ""),
       email: (typeof document !== 'undefined' ? parseCookie('userEmail') : ""),
       clid: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
+      loyalty_points: (typeof document !== 'undefined' ? parseCookie('loyalty_points') : ""),
 
      
     },
@@ -37,11 +40,14 @@ const userSlice = createSlice({
     },
     setClientID(state, action: PayloadAction<string>) {
       state.clientID = action.payload;
+    },
+    setLoyaltyPoints(state, action: PayloadAction<string>) {
+      state.loyaltyPoints = action.payload;
     }
   },
 });
 
-export const { setUserData, setAccessToken, setClientID } = userSlice.actions;
+export const { setUserData, setAccessToken, setClientID,setLoyaltyPoints } = userSlice.actions;
 
 export default userSlice.reducer;
 
@@ -56,6 +62,7 @@ export function setUserDataThunk(
     document.cookie = `userLastName=${data.lastname}; SameSite=Strict; Secure; path=/`;
     document.cookie = `userEmail=${data.email}; SameSite=Strict; Secure; path=/`;
     document.cookie = `client_id=${data.clid}; SameSite=Strict; Secure; path=/`;
+    document.cookie = `loyalty_points=${data.loyalty_points}; SameSite=Strict; Secure; path=/`;
     dispatch(setUserData(data));
   };
 }
@@ -75,5 +82,13 @@ export function setClientIDThunk(
   return async function setIDThunk(dispatch) {
     localStorage.setItem('clientID', id);
     dispatch(setClientID(id));
+  };
+}
+export function setLoyaltyPointsThunk(
+  points: string,
+): ThunkAction<void, RootState, unknown, Action> {
+  return async function setPointsThunk(dispatch) {
+    localStorage.setItem('loyaltyPoints', points);
+    dispatch(setLoyaltyPoints(points));
   };
 }

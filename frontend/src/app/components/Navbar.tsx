@@ -28,6 +28,7 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
             lastname: '',
             email: '',
             clid: '',
+            loyalty_points: '',
         });
         navigate('/');
         enqueueSnackbar('Wylogowano pomyślnie', { variant: 'success' });

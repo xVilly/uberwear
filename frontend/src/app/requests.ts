@@ -111,31 +111,53 @@ export const createAdminRequest = async (accessToken: string, email: string, pas
   return response.json();
 };
 
-export const getAccountReturns = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/account/returns', {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  });
-  return response.json();
-};
 
-export const getAccountFavBrands = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/account/favbrands', {
+
+export const getLoyaltyPoints = async (accessToken: string) => {
+  const response = await fetch('http://localhost:8000/user/LoyaltyPoints', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
-  return response.json();
+  const data = await response.json();
+  return data.loyalty_points;
 };
 
 // Shop
 export const getShops = async () => {
   const response = await fetch('http://localhost:8000/shops', {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+export const getCategories = async (shopId: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/categories`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+export const getColors = async (shopId: string, category: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+export const getProductsByCategoryColor = async (shopId: string, category: string, color: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors/${color}`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',

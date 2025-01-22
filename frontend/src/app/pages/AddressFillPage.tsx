@@ -217,7 +217,7 @@ export function AddressFillingPage() {
               <div key={index} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
                 {/* Image */}
                 <img
-                  src={item.imageUrl}
+                  src={item.image}
                   alt={item.name}
                   style={{
                     width: '60px',
