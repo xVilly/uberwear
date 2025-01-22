@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from './CartContext';
 
 const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
   const navigate = useNavigate();
-
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'blik' | 'cash'>('card');
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: '',
     expiryDate: '',
     cvv: '',
+    blikCode: '', // For BLIK
   });
+
+  // Card Payment Handlers
   const handleCardNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.replace(/\D/g, ''); // Remove non-digits
     if (value.length > 4) {
@@ -34,14 +37,10 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
     setPaymentInfo({ ...paymentInfo, cvv: value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Payment information submitted:', paymentInfo);
-    // You can add further logic for submitting payment
+  const handleBlikCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPaymentInfo({ ...paymentInfo, blikCode: event.target.value });
   };
-
-  // Check if all payment fields are filled
-  const isPaymentValid = (): boolean => {
+  const isCardPaymentValid = (): boolean => {
     const { cardNumber, expiryDate, cvv } = paymentInfo;
     return (
       cardNumber.length === 19 && // Matches "1234 5678 9012 3456" format
@@ -49,90 +48,199 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
       cvv.length === 3            // CVV is 3 digits
     );
   };
+  
+  // Validate if all fields are filled
+  const isPaymentValid = (): boolean => {
+    if (paymentInfo.cardNumber && paymentInfo.expiryDate && paymentInfo.cvv) {
+      return (
+        paymentInfo.cardNumber.length === 19 && 
+        paymentInfo.expiryDate.length === 5 &&
+        paymentInfo.cvv.length === 3
+      );
+    }
+    if (paymentInfo.blikCode) {
+      return paymentInfo.blikCode.length === 6;
+    }
+    return false;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Payment information submitted:', paymentInfo);
+    // You can add further logic for submitting payment
+  };
+
   const handleClick = () => {
     if (isPaymentValid()) {
       navigate('/purchase/delivery');
     }
   };
+  const isBlikValid = (): boolean => paymentInfo.blikCode.length === 6; // Example: BLIK code is 6 digits
 
   return (
     <form
-      onSubmit={handleSubmit}
-      style={{
-        width: '80%',
-        maxWidth: '600px',
-        background: '#FFFFFF',
-        padding: '20px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      {/* Card Number Input */}
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Numer karty</label>
-        <input
-          type="text"
-          name="cardNumber"
-          value={paymentInfo.cardNumber}
-          onChange={handleCardNumberChange}
-          required
-          placeholder="xxxx xxxx xxxx xxxx"
-          maxLength={19}
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: '1px solid #E5E7EB',
-          }}
-        />
-      </div>
-
-      {/* Expiry Date Input */}
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Data ważności</label>
-        <input
-          type="text"
-          name="expiryDate"
-          value={paymentInfo.expiryDate}
-          onChange={handleExpiryDateChange}
-          required
-          maxLength={5}
-          placeholder="MM/YY"
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: '1px solid #E5E7EB',
-          }}
-        />
-      </div>
-
-      {/* CVV Input */}
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>CVV</label>
-        <input
-          type="text"
-          name="cvv"
-          value={paymentInfo.cvv}
-          maxLength={3}
-          onChange={handleCvvChange}
-          required
-          placeholder="xxx"
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: '1px solid #E5E7EB',
-          }}
-        />
-      </div>
-
-      <div style={{ marginTop: '20px', fontSize: '1.5rem', fontWeight: 'bold' }}>
-        {/* Display total price */}
-        <p>Kwota do zapłaty: {totalPrice} zł</p>
-      </div>
-
+    onSubmit={handleSubmit}
+    style={{
+      width: '80%',
+      maxWidth: '600px',
+      background: '#FFFFFF',
+      padding: '20px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    }}
+  >
+    {/* Payment Method Buttons */}
+    <div style={{marginBottom: '15px', display: 'flex', justifyContent: 'center'}}>
       <button
+        type="button"
+        onClick={() => setPaymentMethod('card')}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: paymentMethod === 'card' ? '#FFBF00' : '#F3F4F6',
+          color: paymentMethod === 'card' ? '#1E3A5F' : '#333',
+          border: '2px solid',
+          borderColor: paymentMethod === 'card' ? '#FFBF00' : '#E5E7EB',
+          borderRadius: '4px',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          marginRight: '10px',
+        }}
+      >
+        Karta
+      </button>
+      <button
+        type="button"
+        onClick={() => setPaymentMethod('blik')}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: paymentMethod === 'blik' ? '#FFBF00' : '#F3F4F6',
+          color: paymentMethod === 'blik' ? '#1E3A5F' : '#333',
+          border: '2px solid',
+          borderColor: paymentMethod === 'blik' ? '#FFBF00' : '#E5E7EB',
+          borderRadius: '4px',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+        }}
+      >
+        BLIK
+      </button>
+      <button
+        type="button"
+        onClick={() => setPaymentMethod('cash')}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: paymentMethod === 'cash' ? '#FFBF00' : '#F3F4F6',
+          color: paymentMethod === 'cash' ? '#1E3A5F' : '#333',
+          border: '2px solid',
+          borderColor: paymentMethod === 'cash' ? '#FFBF00' : '#E5E7EB',
+          borderRadius: '4px',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          marginLeft: '9px',
+        }}
+      >
+        Gotówka
+      </button>
+    </div>
+  
+    {paymentMethod === 'card' && (
+      <>
+        {/* Card Number Input */}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Numer karty</label>
+          <input
+            type="text"
+            name="cardNumber"
+            value={paymentInfo.cardNumber}
+            onChange={handleCardNumberChange}
+            required
+            placeholder="xxxx xxxx xxxx xxxx"
+            maxLength={19}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #E5E7EB',
+            }}
+          />
+        </div>
+  
+        {/* Expiry Date Input */}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Data ważności</label>
+          <input
+            type="text"
+            name="expiryDate"
+            value={paymentInfo.expiryDate}
+            onChange={handleExpiryDateChange}
+            required
+            maxLength={5}
+            placeholder="MM/YY"
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #E5E7EB',
+            }}
+          />
+        </div>
+  
+        {/* CVV Input */}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>CVV</label>
+          <input
+            type="text"
+            name="cvv"
+            value={paymentInfo.cvv}
+            maxLength={3}
+            onChange={handleCvvChange}
+            required
+            placeholder="xxx"
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #E5E7EB',
+            }}
+          />
+        </div>
+      </>
+    )}
+  
+    {paymentMethod === 'blik' && (
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>BLIK </label>
+        <input
+          type="text"
+          name="blikCode"
+          value={paymentInfo.blikCode}
+          onChange={handleBlikCodeChange}
+          required
+          placeholder="Wprowadź kod BLIK"
+          maxLength={6}
+          style={{
+            width: '100%',
+            padding: '10px',
+            borderRadius: '4px',
+            border: '1px solid #E5E7EB',
+          }}
+        />
+      </div>
+    )}
+  
+    {paymentMethod === 'cash' && (
+      <div style={{ marginTop: '20px', fontSize: '1.5rem', fontWeight: 'bold' }}>
+        <p>Kwota do zapłaty: {totalPrice} zł (Gotówka)</p>
+      </div>
+    )}
+  
+          <button
         type="submit"
         style={{
           width: '100%',
@@ -141,47 +249,24 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
           color: '#1E3A5F',
           border: 'none',
           borderRadius: '4px',
-          cursor: isPaymentValid() ? 'pointer' : 'not-allowed',
+          cursor: (paymentMethod === 'card' && isCardPaymentValid()) || (paymentMethod === 'blik' && isBlikValid()) || paymentMethod === 'cash' ? 'pointer' : 'not-allowed',
           fontWeight: 'bold',
           fontSize: '1.2rem',
         }}
         onClick={handleClick}
-        disabled={!isPaymentValid}
+        disabled={!((paymentMethod === 'card' && isCardPaymentValid()) || (paymentMethod === 'blik' && isBlikValid()) || paymentMethod === 'cash')}
       >
-        Zatwierdź płatność
+        {paymentMethod === 'cash' ? 'Przejdź do dostawy' : 'Przejdź do płatności'}
       </button>
-    </form>
+  </form>
+  
   );
 };
 
 export function PaymentPage() {
-
-  const navigate = useNavigate();
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-  });
   const location = useLocation();
   const { cart } = useCart();
   const totalPrice = location.state?.totalPrice || 0;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPaymentInfo((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Payment information submitted:', paymentInfo);
-    // You can add further logic for submitting payment
-  };
-
-  // Check if all payment fields are filled
-  const isPaymentValid = Object.values(paymentInfo).every((field) => field.trim() !== '');
 
   return (
     <div
@@ -197,7 +282,7 @@ export function PaymentPage() {
       }}
     >
       <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '20px' }}>
-        Uzupełnij dane o płatności 
+        Uzupełnij dane o płatności
         <span
           style={{
             display: 'block',
@@ -209,18 +294,22 @@ export function PaymentPage() {
         />
       </h1>
 
-      <PaymentForm totalPrice={totalPrice} />
-      {/* Cart Summary */}
+      <div style={{ marginBottom: '20px' }}>
+      </div>
 
+      <PaymentForm totalPrice={totalPrice} />
+
+
+      {/* Cart Summary */}
       <div
-      style={{
-        minHeight: '50vh',
-        display: 'flex',
-        padding: '20px',
-        position: 'fixed',
-        right: '270px'
-      }}
-    >
+        style={{
+          minHeight: '50vh',
+          display: 'flex',
+          padding: '20px',
+          position: 'fixed',
+          right: '240px',
+        }}
+      >
         <div
           style={{
             width: '100%',
@@ -261,8 +350,7 @@ export function PaymentPage() {
             Całkowita cena: {totalPrice} zł
           </h3>
         </div>
-        </div>
-      
+      </div>
     </div>
   );
 }
