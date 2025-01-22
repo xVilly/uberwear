@@ -52,6 +52,12 @@ const routes = createBrowserRouter(
           <Route path=":courierId" element={<CourierDetails />} />
         </Route>
       </Route>
+      <Route path="offer">
+        <Route index element={<OfferPage />} />
+        <Route path=":shopId" element={<ShopPage />} />
+        <Route path=":shopId/category/:category" element={<CategoryPage />} />
+        <Route path=":shopId/category/:category/color/:color/purchase" element={<ProductPage />} />
+      </Route>
 
       <Route path="create-account" element={<CreateAccountPage/>} />
       <Route path="account/data" element={<AccountPageData/>} />
@@ -60,20 +66,11 @@ const routes = createBrowserRouter(
       <Route path="account/favbrands" element={<AccountPageFavBrands/>} />
       <Route path="login" element={<LogInPage/>} />
       <Route path="cart" element={<CartPage/>} />
-      <Route path="offer" element={<OfferPage/>} />
       <Route path="courier" element={<CourierPanelPage />} />
       <Route path="admin/data" element={<AdminData />} />
-      <Route path="offer/fashionbout" element={<FashionBout />} />
-      <Route path="offer/nyclothes" element={<NYClothes />} />
-      <Route path="offer/nyclothes/hoodies" element={<NYHoodies />} />
-      <Route path="offer/nyclothes/sweatpants" element={<NYSweatPants />} />
-      <Route path="offer/nyclothes/tees" element={<NYTees />} />
       <Route path="about" element={<AboutPage />} />
       <Route path="contact" element={<ContactPage />} />
       <Route path="register-shop" element={<RegisterShopPage />} />
-      <Route path="/purchase/hoodie/:color" element={<PurchasePageNYH />} />
-      <Route path="/purchase/sweatpants/:color" element={<PurchasePageNYSw />} />
-      <Route path="/purchase/tees/:color" element={<PurchasePageTee />} />
       <Route path="/purchase/filladdress" element={<AddressFillingPage />} />
       <Route path="/purchase/payment" element={<PaymentPage />} />
       <Route path="/purchase/delivery" element={<DeliveryPage />} />

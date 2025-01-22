@@ -136,6 +136,36 @@ export const getShops = async () => {
   return response.json();
 };
 
+export const getCategories = async (shopId: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/categories`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+export const getColors = async (shopId: string, category: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+export const getProductsByCategoryColor = async (shopId: string, category: string, color: string) => {
+  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors/${color}`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+    },
+  });
+  return response.json();
+};
+
 export const getShop = async (shopId: string) => {
   const response = await fetch(`http://localhost:8000/shop/${shopId}`, {
     method: 'GET',
