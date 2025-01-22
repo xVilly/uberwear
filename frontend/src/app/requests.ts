@@ -111,26 +111,18 @@ export const createAdminRequest = async (accessToken: string, email: string, pas
   return response.json();
 };
 
-export const getAccountReturns = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/account/returns', {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  });
-  return response.json();
-};
 
-export const getAccountFavBrands = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/account/favbrands', {
+
+export const getLoyaltyPoints = async (accessToken: string) => {
+  const response = await fetch('http://localhost:8000/user/LoyaltyPoints', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
-  return response.json();
+  const data = await response.json();
+  return data.loyalty_points;
 };
 
 // Shop

@@ -1,130 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AccountSidebar } from './AccountSidebar';
+import { getLoyaltyPoints } from '../requests';
+import { connect } from 'react-redux';
+import { RootState } from '../store/mainStore';
+import { UserData } from '../redux/userSlice';
 
-export function AccountPagePoints() {
+export function AccountPagePoints({ userData }: { userData: UserData }) {
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try {
+        const data = await getLoyaltyPoints(userData.access);
+        setPoints(data);
+      } catch (error) {
+        console.error('Failed to fetch points:', error);
+      }
+    };
+
+    fetchPoints();
+  }, [userData.access]);
+
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        background: '#F3F4F6',
-        color: '#1E3A5F',
-        fontFamily: "'Playfair Display', serif",
-      }}
-    >
+    <div className="h-screen flex bg-gray-100 text-[#1E3A5F] font-playfair">
       {/* Left Navigation Bar */}
-      <nav
-        style={{
-          width: '250px',
-          background: '#1E3A5F',
-          borderRight: '3px solid #FFC107',
-          padding: '20px',
-          color: '#F3F4F6',
-        }}
-      >
-        <ul
-          style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-          }}
-        >
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/data"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Twoje dane
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/orders"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Zamówienia
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/returns"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Zwroty
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/points"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Punkty
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/favbrands"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Ulubione Marki
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      <AccountSidebar />
 
       {/* Main Content */}
-      <div
-        style={{
-          flex: 1,
-          padding: '40px',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '36px',
-            marginBottom: '30px',
-            position: 'relative',
-            fontWeight: 'bold',
-          }}
-        >
-           Punkty
-          <span
-            style={{
-              position: 'absolute',
-              left: 0,
-              bottom: -10,
-              width: '100%',
-              height: '3px',
-              backgroundColor: 'rgba(255, 193, 7, 0.8)',
-            }}
-          ></span>
+      <div className="flex-1 p-10">
+      <h1 className="text-4xl mb-8 relative font-bold text-center border-b-yellow-400 border-b-2">
+        Punkty lojalnościowe
         </h1>
-      </div>
+      <ul>
+         
+            <li className="mb-5 p-4 bg-white shadow-md rounded-md">
+              <div className="text-lg">Ilość punktów, które posidasz: {points}</div>
+            </li>
+          
+        </ul>
+        </div>
     </div>
   );
 }
+
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
+
+export default connect(mapStateToProps)(AccountPagePoints);

@@ -156,6 +156,7 @@ def current_user(db: Session = Depends(get_db), user: User = Depends(get_current
     }
     if user.user_type == UserType.Client:
         return_data["client_id"] = get_client(db, user.user_ID).client_ID
+        return_data["loyalty_points"] = get_client(db, user.user_ID).loyalty_points
     if user.user_type == UserType.Admin:
         return_data["admin"] = get_admin(db, user.user_ID)
     return return_data
@@ -180,3 +181,14 @@ def update_user(form: UserUpdate, db: Session = Depends(get_db), user: User = De
         "message": "User updated successfully",
         "updated_user_id": user.user_ID,
     }
+    
+@router.get("/user/LoyaltyPoints")
+def get_loyalty_points(db: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
+    if user.user_type == UserType.Client:
+        client = get_client(db, user.user_ID)
+        return {
+            "loyalty_points": client.loyalty_points
+        }
+    
+    
+    

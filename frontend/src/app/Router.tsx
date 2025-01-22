@@ -3,17 +3,16 @@ import { Layout } from "./Layout";
 import { RouteError } from "./pages/Error";
 import { HomePage } from "./pages/Home";
 import { CreateAccountPage } from "./pages/CreateAccount";
-import  AccountPageOrders from "./pages/AccountPageOrders";
-import { AccountPageReturns} from "./pages/AccountPageReturns";
-import { AccountPagePoints} from "./pages/AccountPagePoints";
-import { AccountPageFavBrands} from "./pages/AccountPageFavBrands";
-import { OfferPage} from "./pages/Offer";
-import { CartPage} from "./pages/Cart";
+import AccountPageOrders from "./pages/AccountPageOrders";
+import AccountPagePoints  from "./pages/AccountPagePoints";
+import AccountPageFavBrands  from "./pages/AccountPageFavBrands";
+import { OfferPage } from "./pages/Offer";
+import { CartPage } from "./pages/Cart";
 import AdminCouriers from "./pages/admin/AdminCouriers";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminClients from "./pages/admin/AdminClients";
-import {FashionBout} from "./pages/ShopFashionBout";
-import {NYClothes} from "./pages/ShopNyClothes";
+import { FashionBout } from "./pages/ShopFashionBout";
+import { NYClothes } from "./pages/ShopNyClothes";
 import { NYHoodies } from "./pages/NYClothesHoodies";
 import { NYSweatPants } from "./pages/NYClothesSweatPants";
 import { NYTees } from "./pages/NYClothesTees";
@@ -21,8 +20,8 @@ import { AboutPage } from "./pages/AboutPage";
 import { ContactPage } from "./pages/ContactPage";
 import { RegisterShopPage } from "./pages/RegisterShopPage";
 import { CourierPanelPage } from "./pages/CourierPanel";
-import { PurchasePageNYH} from './pages/NYHoodiePurchasePage';
-import { PurchasePageNYSw} from './pages/NYSweatPantsPurchasePage';
+import { PurchasePageNYH } from './pages/NYHoodiePurchasePage';
+import { PurchasePageNYSw } from './pages/NYSweatPantsPurchasePage';
 import { PurchasePageTee } from './pages/NYTeePurchasePage';
 import { AddressFillingPage } from "./pages/AddressFillPage";
 import { PaymentPage } from "./pages/PaymentPage";
@@ -33,7 +32,6 @@ import AccountPageData from "./pages/AccountPageData";
 import OrderDetails from "./pages/admin/OrderDetails";
 import CourierDetails from "./pages/admin/CourierDetails";
 import ClientDetails from "./pages/admin/ClientDetails";
-import { isMapIterator } from "util/types";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -58,7 +56,6 @@ const routes = createBrowserRouter(
       <Route path="create-account" element={<CreateAccountPage/>} />
       <Route path="account/data" element={<AccountPageData/>} />
       <Route path="account/orders" element={<AccountPageOrders/>} />
-      <Route path="account/returns" element={<AccountPageReturns/>} />
       <Route path="account/points" element={<AccountPagePoints/>} />
       <Route path="account/favbrands" element={<AccountPageFavBrands/>} />
       <Route path="login" element={<LogInPage/>} />

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { getUserInfo, updateUserInfo } from '../requests';
 import { RootState } from '../store/mainStore';
 import { connect } from 'react-redux';
-import AdminData from './admin/AdminData';
 import { UserData } from '../redux/userSlice';
+import { AccountSidebar } from './AccountSidebar';
 
 type FormData = {
   Imię: string;
@@ -13,9 +12,10 @@ type FormData = {
   'Numer Telefonu': string;
   Hasło: string;
 };
-function AccountPageData({userData}: {userData: UserData}) {
+
+function AccountPageData({ userData }: { userData: UserData }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [currentField, setCurrentField] = useState<keyof FormData | null>(null); // Typed to keys of FormData or null
+  const [currentField, setCurrentField] = useState<keyof FormData | null>(null);
   const [formData, setFormData] = useState<FormData>({
     Imię: '',
     Nazwisko: '',
@@ -43,19 +43,16 @@ function AccountPageData({userData}: {userData: UserData}) {
     fetchUserInfo();
   }, [userData.access]);
 
-  // Open popup
   const handleEditClick = (field: keyof FormData) => {
     setCurrentField(field);
     setIsPopupOpen(true);
   };
 
-  // Close popup
   const closePopup = () => {
     setIsPopupOpen(false);
     setCurrentField(null);
   };
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (currentField) {
       setFormData({
@@ -65,7 +62,6 @@ function AccountPageData({userData}: {userData: UserData}) {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -77,261 +73,60 @@ function AccountPageData({userData}: {userData: UserData}) {
   };
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        background: '#F3F4F6',
-        color: '#1E3A5F',
-        fontFamily: "'Playfair Display', serif",
-      }}
-    >
+    <div className="h-screen flex bg-gray-100 text-[#1E3A5F] font-playfair">
       {/* Left Navigation Bar */}
-
-      <nav
-        style={{
-          width: '250px',
-          background: '#1E3A5F',
-          borderRight: '3px solid #FFC107',
-          padding: '20px',
-          color: '#F3F4F6',
-        }}
-      >
-        <ul
-          style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-          }}
-        >
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/data"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Twoje dane
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/orders"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Zamówienia
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/returns"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Zwroty
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/points"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Punkty
-            </Link>
-          </li>
-          <li style={{ marginBottom: '15px' }}>
-            <Link
-              to="/account/favbrands"
-              style={{
-                textDecoration: 'none',
-                color: '#F3F4F6',
-                fontSize: '18px',
-                fontWeight: '500',
-              }}
-            >
-              Ulubione Marki
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      <AccountSidebar />
 
       {/* Main Content */}
-      <div
-        style={{
-          flex: 1,
-          padding: '40px',
-        }}
-      >
-        {/* Caption */}
-        <h1
-          style={{
-            fontSize: '36px',
-            marginBottom: '30px',
-            position: 'relative',
-            fontWeight: 'bold',
-          }}
-        >
+      <div className="flex-1 p-10">
+        <h1 className="text-4xl mb-8 relative font-bold text-center border-b-yellow-400 border-b-2">
           Twoje dane
-          <span
-            style={{
-              position: 'absolute',
-              left: 0,
-              bottom: -10,
-              width: '100%',
-              height: '3px',
-              backgroundColor: 'rgba(255, 193, 7, 0.8)',
-            }}
-          ></span>
         </h1>
-
-        {/* Data Fields */}
         {Object.entries(formData).map(([field, value]) => (
           <div
             key={field}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              border: '2px solid #FFBF00',
-              borderRadius: '5px',
-              padding: '15px 20px',
-              marginBottom: '20px',
-              backgroundColor: '#1E3A5F',
-            }}
+            className="flex items-center justify-between border-2 border-yellow-500 rounded-md p-4 mb-5 bg-[#1E3A5F]"
           >
-            <div
-              style={{
-                fontSize: '18px',
-                fontWeight: '500',
-                color: 'white',
-              }}
-            >
+            <div className="text-lg font-light text-white">
               <strong>{field}:</strong> {value}
             </div>
             <button
-              style={{
-                padding: '10px',
-                borderRadius: '5px',
-                background: '#1E3A5F',
-                color: 'white',
-                fontWeight: 'bold',
-                border: '2px solid #FFBF00',
-                fontSize: '16px',
-                cursor: 'pointer',
-              }}
+              className="p-2 rounded-md bg-[#1E3A5F] text-white font-bold border-2 border-yellow-500 text-lg cursor-pointer hover:scale-110 transition-all duration-200"
               onClick={() => handleEditClick(field as keyof FormData)}
             >
               Edytuj
             </button>
           </div>
         ))}
-
-        {/* Popup Window */}
         {isPopupOpen && currentField && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <div
-              style={{
-                background: 'white',
-                borderRadius: '10px',
-                padding: '20px',
-                width: '400px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-              }}
-            >
-              <h2
-                style={{
-                  marginBottom: '20px',
-                  fontSize: '24px',
-                  fontWeight: 'bold',
-                  color: '#1E3A5F',
-                }}
-              >
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-lg p-5 w-96 shadow-lg">
+              <h2 className="mb-5 text-2xl font-bold text-[#1E3A5F]">
                 Edytuj {currentField}
               </h2>
               <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '20px' }}>
-                  <label
-                    style={{
-                      display: 'block',
-                      marginBottom: '10px',
-                      fontSize: '16px',
-                      fontWeight: '500',
-                    }}
-                  >
+                <div className="mb-5">
+                  <label className="block mb-2 text-lg font-medium">
                     Nowa wartość:
                   </label>
                   <input
                     type={currentField === 'Hasło' ? 'password' : 'text'}
                     value={formData[currentField]}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      borderRadius: '5px',
-                      border: '2px solid #FFBF00',
-                      fontSize: '16px',
-                    }}
+                    className="w-full p-2 rounded-md border-2 border-yellow-500 text-lg"
                   />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={closePopup}
-                    style={{
-                      padding: '10px 15px',
-                      borderRadius: '5px',
-                      background: '#FF4B4B',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      border: 'none',
-                      fontSize: '16px',
-                      marginRight: '10px',
-                      cursor: 'pointer',
-                    }}
+                    className="py-1 px-2 rounded-md bg-red-600 text-white shadow-md border-red-900 border text-lg mr-2 cursor-pointer hover:scale-110 transition-all duration-200"
                   >
                     Anuluj
                   </button>
                   <button
                     type="submit"
-                    style={{
-                      padding: '10px 15px',
-                      borderRadius: '5px',
-                      background: '#1E3A5F',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      border: 'none',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                    }}
+                    className="py-1 px-2 rounded-md bg-[#1E3A5F] text-white shadow-md border-black border text-lg cursor-pointer hover:scale-110 transition-all duration-200"
                   >
                     Zapisz
                   </button>
@@ -346,6 +141,5 @@ function AccountPageData({userData}: {userData: UserData}) {
 }
 
 const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
-
 
 export default connect(mapStateToProps)(AccountPageData);
