@@ -29,6 +29,30 @@ export const loginRequest = async (email: string,
   return { status, data };
 };
 
+export const createAccount = async (
+  email: string, 
+  password: string,
+  name: string,
+  surname: string,
+  phone: string,
+  street: string,
+  city: string,
+  postcode: string,
+  district: string
+) => {
+  const response = await fetch('http://localhost:8000/register', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password, name, surname, phone, street, city, postcode, district }),
+  });
+  const status = response.status;
+  const data = await response.json();
+  return { status, data };
+};
+
 export const getUserInfo = async (accessToken: string) => {
   const response = await fetch('http://localhost:8000/user/me', {
     method: 'GET',
@@ -73,17 +97,6 @@ export const getOrders = async (accessToken: string) => {
 }
 
 // Account
-export const registerRequest = async (email: string, password: string) => {
-  const response = await fetch('http://localhost:8000/register', {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-  return response.json();
-};
 
 export const createAdminRequest = async (accessToken: string, email: string, password: string) => {
   const response = await fetch('http://localhost:8000/user/admin', {
