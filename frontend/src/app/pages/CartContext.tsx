@@ -1,18 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// Define types for the cart items
-type CartItem = {
-  color: string;
-  size: string;
-  price: number;
-  imageUrl: string;
-  name: string;
-};
+import { Product } from '../models/Product';
 
 type CartContextType = {
-  cart: CartItem[];
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (index: number) => void;
+  cart: Product[];
+  addToCart: (item: Product) => void;
+  removeFromCart: (id: number) => void;
   clearCart: () => void;
 };
 
@@ -30,7 +22,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return storedCart ? JSON.parse(storedCart) : [];
   };
 
-  const [cart, setCart] = useState<CartItem[]>(loadCartFromStorage);
+  const [cart, setCart] = useState<Product[]>(loadCartFromStorage);
   const clearCart = () => {
     setCart([]);
     localStorage.removeItem('cart');
@@ -43,12 +35,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }
   }, [cart]);
 
-  const addToCart = (item: CartItem) => {
+  const addToCart = (item: Product) => {
     setCart((prevCart) => [...prevCart, item]);
   };
 
-  const removeFromCart = (index: number) => {
-    setCart((prevCart) => prevCart.filter((_, i) => i !== index));
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) => prevCart.filter(product => product.product_ID !== id));
   };
 
   return (

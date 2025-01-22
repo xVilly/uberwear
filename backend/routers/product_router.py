@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from models.tables.address import Address
@@ -24,6 +25,52 @@ class ProductCreate(BaseModel):
 @router.get("/products")
 def get_products(db: Session = Depends(get_db)):
     products = db.query(Product).all()
+    return products
+
+@router.get("/shop/{shop_id}/category/{category}/colors")
+def get_category_colors(shop_id: int, category: str, db: Session = Depends(get_db)):
+    shop = db.query(Shop).filter(Shop.shop_ID == shop_id).first()
+    if not shop:
+        raise HTTPException(status_code=404, detail="Shop not found")
+    
+    products = db.query(Product).filter(and_(Product.shop_ID == shop_id, Product.category == category)).all()
+    colors = set([product.color for product in products])
+
+    colors_expanded = []
+    for color in colors:
+        # parse product image from color
+        product = db.query(Product).filter(and_(Product.category == category, Product.color == color)).first()
+        if product:
+            colors_expanded.append({
+                "color": color,
+                "product": product.name,
+                "image": product.image
+            })
+        else:
+            colors_expanded.append({
+                "color": color,
+                "product": '',
+                "image": None
+            })
+
+    return colors_expanded
+
+@router.get("/shop/{shop_id}/category/{category}/colors/{color}")
+def get_color_products(shop_id: int, category: str, color: str, db: Session = Depends(get_db)):
+    shop = db.query(Shop).filter(Shop.shop_ID == shop_id).first()
+    if not shop:
+        raise HTTPException(status_code=404, detail="Shop not found")
+    
+    products = db.query(Product).filter(and_(Product.shop_ID == shop_id, Product.category == category, Product.color == color)).all()
+    return products
+
+@router.get("/shop/{shop_id}/products")
+def get_shop_products(shop_id: int, db: Session = Depends(get_db)):
+    shop = db.query(Shop).filter(Shop.shop_ID == shop_id).first()
+    if not shop:
+        raise HTTPException(status_code=404, detail="Shop not found")
+    
+    products = db.query(Product).filter(Product.shop_ID == shop_id).all()
     return products
 
 # Pobieranie produktu po ID
@@ -104,4 +151,41 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     return {
         "message": "Product deleted successfully",
         "deleted_product_id": product_id
+    }
+
+@router.get("/shop/{shop_id}/categories")
+def get_shop_categories(shop_id: int, db: Session = Depends(get_db)):
+    shop = db.query(Shop).filter(Shop.shop_ID == shop_id).first()
+    if not shop:
+        raise HTTPException(status_code=404, detail="Shop not found")
+    
+    products = db.query(Product).filter(Product.shop_ID == shop_id).all()
+    categories = set([product.category for product in products])
+
+    categories_expanded = []
+    for category in categories:
+        # parse black color product image from category
+        product = db.query(Product).filter(and_(Product.category == category, Product.color == 'Czarny')).first()
+        if product:
+            categories_expanded.append({
+                "name": category,
+                "image": product.image
+            })
+        else:
+            product = db.query(Product).filter(Product.category == category).first()
+            if product:
+                categories_expanded.append({
+                    "name": category,
+                    "image": product.image
+                })
+            else:
+                categories_expanded.append({
+                    "name": category,
+                    "image": None
+                })
+
+    
+    return {
+        "shop_id": shop_id,
+        "categories": categories_expanded
     }

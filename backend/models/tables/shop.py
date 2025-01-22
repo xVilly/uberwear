@@ -8,3 +8,4 @@ class Shop(Base):
     name = Column(String(60))
     phone = Column(String(255))
     address_ID = Column(Integer, index=True)
+    image = Column(String(255))

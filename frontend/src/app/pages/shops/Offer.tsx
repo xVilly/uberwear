@@ -1,10 +1,30 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getShops } from '../../requests';
+import { Shop } from '../../models/Shop';
+
+
 export function OfferPage() {
   const navigate = useNavigate();
-  const brands = [
-    { name: 'Fashion Bout', img: '/brands/fashion_bout.jpg', path: '/offer/fashionbout'},
-    { name: 'NY Clothes', img: '/brands/nyclothes.jpg', path: '/offer/nyclothes'},
-  ];
+  // const brands = [
+  //   { name: 'Fashion Bout', img: '/brands/fashion_bout.jpg', path: '/offer/fashionbout'},
+  //   { name: 'NY Clothes', img: '/brands/nyclothes.jpg', path: '/offer/nyclothes'},
+  // ];
+  const [shops, setShops] = useState<Shop[]>([]);
+  
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const shopData = await getShops();
+        setShops(shopData);
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+      }
+    };
+
+    fetchShops();
+  }, []);
+
 
   return (
     <div
@@ -39,7 +59,7 @@ export function OfferPage() {
           justifyContent: 'center',
         }}
       >
-        {brands.map((brand, index) => (
+        {shops.map((shop: Shop, index) => (
           <div
             key={index}
             style={{
@@ -53,7 +73,7 @@ export function OfferPage() {
               style={{
                 width: '200px',
                 height: '200px',
-                backgroundImage: `url(${brand.img})`,
+                backgroundImage: `url(${shop.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 borderRadius: '10px',
@@ -62,7 +82,7 @@ export function OfferPage() {
                 transition: 'transform 0.3s ease',
               }}
 //               onClick={() => alert(`You selected ${brand.name}`)}
-              onClick={() => navigate(brand.path)}
+              onClick={() => navigate(`/offer/${shop.shop_ID}`)}
 
               onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
               onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
@@ -77,7 +97,7 @@ export function OfferPage() {
                 textAlign: 'center',
               }}
             >
-              {brand.name}
+              {shop.name}
             </span>
           </div>
         ))}
