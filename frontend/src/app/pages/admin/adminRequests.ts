@@ -1,5 +1,7 @@
+import { baseURL } from "../../requests";
+
 export const getOrderDetails = async (accessToken: string, orderId: string) => {
-    const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+    const response = await fetch(baseURL + `/orders/${orderId}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -10,7 +12,7 @@ export const getOrderDetails = async (accessToken: string, orderId: string) => {
 }
 
 export const requestCancelOrder = async (accessToken: string, orderId: string) => {
-    const response = await fetch(`http://localhost:8000/orders/${orderId}/cancel`, {
+    const response = await fetch(baseURL + `/orders/${orderId}/cancel`, {
         method: 'PUT',
         headers: {
             'accept': 'application/json',
@@ -21,7 +23,7 @@ export const requestCancelOrder = async (accessToken: string, orderId: string) =
 }
 
 export const requestDeleteOrder = async (accessToken: string, orderId: string) => {
-    const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+    const response = await fetch(baseURL + `/orders/${orderId}`, {
         method: 'DELETE',
         headers: {
             'accept': 'application/json',
@@ -32,7 +34,7 @@ export const requestDeleteOrder = async (accessToken: string, orderId: string) =
 }
 
 export const getCouriers = async (accessToken: string, index: number = 0, limit: number = 50) => {
-    const response = await fetch(`http://localhost:8000/admin/couriers?start_index=${index}&limit=${limit}`, {
+    const response = await fetch(baseURL + `/admin/couriers?start_index=${index}&limit=${limit}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -43,7 +45,7 @@ export const getCouriers = async (accessToken: string, index: number = 0, limit:
 }
 
 export const getCourierDetails = async (accessToken: string, courierId: string) => {
-    const response = await fetch(`http://localhost:8000/admin/couriers/${courierId}`, {
+    const response = await fetch(baseURL + `/admin/couriers/${courierId}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -55,7 +57,7 @@ export const getCourierDetails = async (accessToken: string, courierId: string) 
 
 
 export const getClientDetails = async (accessToken: string, clientId: string) => {
-    const response = await fetch(`http://localhost:8000/admin/clients/${clientId}`, {
+    const response = await fetch(baseURL + `/admin/clients/${clientId}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -66,7 +68,7 @@ export const getClientDetails = async (accessToken: string, clientId: string) =>
 }
 
 export const requestActivateUser = async (accessToken: string, userId: string) => {
-    const response = await fetch(`http://localhost:8000/admin/${userId}/activate`, {
+    const response = await fetch(baseURL + `/admin/${userId}/activate`, {
         method: 'PATCH',
         headers: {
             'accept': 'application/json',
@@ -77,7 +79,7 @@ export const requestActivateUser = async (accessToken: string, userId: string) =
 }
 
 export const requestDeactivateUser = async (accessToken: string, userId: string) => {
-    const response = await fetch(`http://localhost:8000/admin/${userId}/deactivate`, {
+    const response = await fetch(baseURL + `/admin/${userId}/deactivate`, {
         method: 'PATCH',
         headers: {
             'accept': 'application/json',
@@ -88,7 +90,7 @@ export const requestDeactivateUser = async (accessToken: string, userId: string)
 }
 
 export const getCourierOrders = async (accessToken: string, courierId: string) => {
-    const response = await fetch(`http://localhost:8000/courier/${courierId}/orders`, {
+    const response = await fetch(baseURL + `/courier/${courierId}/orders`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -99,7 +101,7 @@ export const getCourierOrders = async (accessToken: string, courierId: string) =
 }
 
 export const getClientOrders = async (accessToken: string, clientId: string) => {
-    const response = await fetch(`http://localhost:8000/client/${clientId}/orders`, {
+    const response = await fetch(baseURL + `/client/${clientId}/orders`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -111,7 +113,7 @@ export const getClientOrders = async (accessToken: string, clientId: string) => 
 
 
 export const getClients = async (accessToken: string, index: number = 0, limit: number = 50) => {
-    const response = await fetch(`http://localhost:8000/admin/clients?start_index=${index}&limit=${limit}`, {
+    const response = await fetch(baseURL + `/admin/clients?start_index=${index}&limit=${limit}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',

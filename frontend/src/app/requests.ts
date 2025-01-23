@@ -1,7 +1,10 @@
 import { UserData } from "./redux/userSlice";
 
+export const baseURL = 'https://quickfit.villyware.com/api';
+//export const baseURL = 'http://localhost:8000';
+
 export const getClientID = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/user/me', {
+  const response = await fetch(baseURL + '/user/me', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -16,7 +19,7 @@ export const getClientID = async (accessToken: string) => {
 export const loginRequest = async (email: string, 
   password: string 
 ) => {
-  const response = await fetch('http://localhost:8000/login', {
+  const response = await fetch(baseURL + '/login', {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -40,7 +43,7 @@ export const createAccount = async (
   postcode: string,
   district: string
 ) => {
-  const response = await fetch('http://localhost:8000/register', {
+  const response = await fetch(baseURL + '/register', {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -57,7 +60,7 @@ export const makeOrderRequest = async (accessToken: string,
   products: {id: number, count: number}[],
   payment_method: string 
 ) => {
-  const response = await fetch('http://localhost:8000/orders', {
+  const response = await fetch(baseURL + '/orders', {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -72,7 +75,7 @@ export const makeOrderRequest = async (accessToken: string,
 };
 
 export const getUserInfo = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/user/me', {
+  const response = await fetch(baseURL + '/user/me', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -91,7 +94,7 @@ export const updateUserInfo = async (accessToken: string, formData: any) => {
     password: formData.Hasło,
   }
 
-  const response = await fetch('http://localhost:8000/user/me', {
+  const response = await fetch(baseURL + '/user/me', {
     method: 'PATCH',
     headers: {
       'accept': 'application/json',
@@ -104,7 +107,7 @@ export const updateUserInfo = async (accessToken: string, formData: any) => {
 };
 
 export const getOrders = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/orders', {
+  const response = await fetch(baseURL + '/orders', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -117,7 +120,7 @@ export const getOrders = async (accessToken: string) => {
 // Account
 
 export const createAdminRequest = async (accessToken: string, email: string, password: string) => {
-  const response = await fetch('http://localhost:8000/user/admin', {
+  const response = await fetch(baseURL + '/user/admin', {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -132,7 +135,7 @@ export const createAdminRequest = async (accessToken: string, email: string, pas
 
 
 export const getLoyaltyPoints = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/user/LoyaltyPoints', {
+  const response = await fetch(baseURL + '/user/LoyaltyPoints', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -145,7 +148,7 @@ export const getLoyaltyPoints = async (accessToken: string) => {
 
 // Shop
 export const getShops = async () => {
-  const response = await fetch('http://localhost:8000/shops', {
+  const response = await fetch(baseURL + '/shops', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -155,7 +158,7 @@ export const getShops = async () => {
 };
 
 export const getCategories = async (shopId: string) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}/categories`, {
+  const response = await fetch(baseURL + `/shop/${shopId}/categories`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -165,7 +168,7 @@ export const getCategories = async (shopId: string) => {
 };
 
 export const getColors = async (shopId: string, category: string) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors`, {
+  const response = await fetch(baseURL + `/shop/${shopId}/category/${category}/colors`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -175,7 +178,7 @@ export const getColors = async (shopId: string, category: string) => {
 };
 
 export const getProductsByCategoryColor = async (shopId: string, category: string, color: string) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}/category/${category}/colors/${color}`, {
+  const response = await fetch(baseURL + `/shop/${shopId}/category/${category}/colors/${color}`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -185,7 +188,7 @@ export const getProductsByCategoryColor = async (shopId: string, category: strin
 };
 
 export const getShop = async (shopId: string) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}`, {
+  const response = await fetch(baseURL + `/shop/${shopId}`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -195,7 +198,7 @@ export const getShop = async (shopId: string) => {
 };
 
 export const updateShop = async (shopId: string, shopData: any) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}`, {
+  const response = await fetch(baseURL + `/shop/${shopId}`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
@@ -207,7 +210,7 @@ export const updateShop = async (shopId: string, shopData: any) => {
 };
 
 export const deleteShop = async (shopId: string) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}`, {
+  const response = await fetch(baseURL + `/shop/${shopId}`, {
     method: 'DELETE',
     headers: {
       'accept': 'application/json',
@@ -217,7 +220,7 @@ export const deleteShop = async (shopId: string) => {
 };
 
 export const addShop = async (shopData: any) => {
-  const response = await fetch('http://localhost:8000/shop', {
+  const response = await fetch(baseURL + '/shop', {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -230,7 +233,7 @@ export const addShop = async (shopData: any) => {
 
 // Product
 export const getProducts = async () => {
-  const response = await fetch('http://localhost:8000/products', {
+  const response = await fetch(baseURL + '/products', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -240,7 +243,7 @@ export const getProducts = async () => {
 };
 
 export const getProduct = async (productId: string) => {
-  const response = await fetch(`http://localhost:8000/product/${productId}`, {
+  const response = await fetch(baseURL + `/product/${productId}`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -250,7 +253,7 @@ export const getProduct = async (productId: string) => {
 };
 
 export const updateProduct = async (productId: string, productData: any) => {
-  const response = await fetch(`http://localhost:8000/product/${productId}`, {
+  const response = await fetch(baseURL + `/product/${productId}`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
@@ -262,7 +265,7 @@ export const updateProduct = async (productId: string, productData: any) => {
 };
 
 export const deleteProduct = async (productId: string) => {
-  const response = await fetch(`http://localhost:8000/product/${productId}`, {
+  const response = await fetch(baseURL + `/product/${productId}`, {
     method: 'DELETE',
     headers: {
       'accept': 'application/json',
@@ -272,7 +275,7 @@ export const deleteProduct = async (productId: string) => {
 };
 
 export const addProduct = async (shopId: string, productData: any) => {
-  const response = await fetch(`http://localhost:8000/shop/${shopId}/product`, {
+  const response = await fetch(baseURL + `/shop/${shopId}/product`, {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -284,7 +287,7 @@ export const addProduct = async (shopId: string, productData: any) => {
 };
 
 export const getOrderById = async (accessToken: string,orderId: string) => {
-  const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+  const response = await fetch(baseURL + `/orders/${orderId}`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -296,7 +299,7 @@ export const getOrderById = async (accessToken: string,orderId: string) => {
 
 // Order
 export const getOrdersByClient = async (accessToken: string,client_id: string) => {
-  const response = await fetch(`http://localhost:8000/client/${client_id}/orders`, {
+  const response = await fetch(baseURL + `/client/${client_id}/orders`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -307,7 +310,7 @@ export const getOrdersByClient = async (accessToken: string,client_id: string) =
 };
 
 export const getCourierID = async (accessToken: string) => {
-  const response = await fetch('http://localhost:8000/user/me', {
+  const response = await fetch(baseURL + '/user/me', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -319,7 +322,7 @@ export const getCourierID = async (accessToken: string) => {
 }
 
 export const getOrdersByCourier = async (accessToken:string,courierId: string) => {
-  const response = await fetch(`http://localhost:8000/courier/${courierId}/orders`, {
+  const response = await fetch(baseURL + `/courier/${courierId}/orders`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -330,7 +333,7 @@ export const getOrdersByCourier = async (accessToken:string,courierId: string) =
 };
 
 export const getAllOrders = async () => {
-  const response = await fetch('http://localhost:8000/orders', {
+  const response = await fetch(baseURL + '/orders', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -340,7 +343,7 @@ export const getAllOrders = async () => {
 };
 
 export const payOrder = async (access: string, orderId: string) => {
-  const response = await fetch(`http://localhost:8000/orders/${orderId}/pay`, {
+  const response = await fetch(baseURL + `/orders/${orderId}/pay`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
@@ -351,7 +354,7 @@ export const payOrder = async (access: string, orderId: string) => {
 };
 
 export const cancelOrder = async (orderId: string) => {
-  const response = await fetch(`http://localhost:8000/orders/${orderId}/cancel`, {
+  const response = await fetch(baseURL + `/orders/${orderId}/cancel`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
@@ -361,7 +364,7 @@ export const cancelOrder = async (orderId: string) => {
 };
 
 export const deleteOrder = async (orderId: string) => {
-  const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+  const response = await fetch(baseURL + `/orders/${orderId}`, {
     method: 'DELETE',
     headers: {
       'accept': 'application/json',
@@ -371,7 +374,7 @@ export const deleteOrder = async (orderId: string) => {
 };
 
 export const deliverOrder = async (accessToken:string,orderId: number) => {
-  const response = await fetch(`http://localhost:8000/orders/${orderId}/deliver`, {
+  const response = await fetch(baseURL + `/orders/${orderId}/deliver`, {
     method: 'PATCH',
     headers: {
       'accept': 'application/json',
@@ -382,7 +385,7 @@ export const deliverOrder = async (accessToken:string,orderId: number) => {
 };
 
 export const getCouriers = async () => {
-  const response = await fetch('http://localhost:8000/admin/couriers', {
+  const response = await fetch(baseURL + '/admin/couriers', {
     method: 'GET',
     headers: {
       'accept': 'application/json',
@@ -392,7 +395,7 @@ export const getCouriers = async () => {
 };
 
 export const assignCourier = async (userId: string) => {
-  const response = await fetch(`http://localhost:8000/admin/${userId}/courier`, {
+  const response = await fetch(baseURL + `/admin/${userId}/courier`, {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -402,7 +405,7 @@ export const assignCourier = async (userId: string) => {
 };
 
 export const removeCourier = async (userId: string) => {
-  const response = await fetch(`http://localhost:8000/admin/${userId}/courier`, {
+  const response = await fetch(baseURL + `/admin/${userId}/courier`, {
     method: 'DELETE',
     headers: {
       'accept': 'application/json',
