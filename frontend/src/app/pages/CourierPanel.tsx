@@ -144,20 +144,20 @@ export function CourierPanelPage({ userData }: { userData: UserData }) {
                                     <button
                                         style={{
                                             padding: '10px 20px',
-                                            background: order.status === 'Delivered' ? '#A0AEC0' : '#1E40AF',
+                                            background: order.status === 'Finalized' ? '#A0AEC0' : '#1E40AF',
                                             color: '#F3F4F6',
                                             border: 'none',
                                             borderRadius: '5px',
-                                            cursor: order.status === 'Delivered' ? 'not-allowed' : 'pointer',
+                                            cursor: order.status === 'Finalized' ? 'not-allowed' : 'pointer',
                                             marginTop: '10px',
                                         }}
                                         onClick={async () => {
-                                            if (order.status !== 'Delivered') {
+                                            if (order.status !== 'Finalized' ) {
                                                 await handleDeliverOrder(order.id);
                                                 window.location.reload();
                                             }
                                         }}
-                                        disabled={order.status === 'Delivered'}
+                                        disabled={order.status === 'Finalized'}
                                     >
                                         Dostarcz
                                     </button>
