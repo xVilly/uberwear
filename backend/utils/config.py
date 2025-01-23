@@ -11,6 +11,7 @@ class Config:
         self.DATABASE_URL = os.getenv('DATABASE_URL')
         self.AUTH_SECRET = os.getenv('AUTH_SECRET')
         self.TOKEN_EXPIRATION_MINUTES = os.getenv('TOKEN_EXPIRATION_MINUTES')
+        self.API_ROOT_PATH = os.getenv('API_ROOT_PATH')
 
 def cfg():
     global config

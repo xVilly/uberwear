@@ -13,7 +13,7 @@ from fastapi.openapi.utils import get_openapi
 
 
 # Utworzenie instancji API
-app = FastAPI()
+app = FastAPI(root_path=cfg().API_ROOT_PATH or "")
 
 # Konfiguracje CORS (tryb zgodności z przeglądarkami - mało ważne przy testowaniu)
 app.add_middleware(
