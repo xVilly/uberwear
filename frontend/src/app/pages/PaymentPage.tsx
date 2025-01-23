@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from './CartContext';
-import { makeOrderRequest } from '../requests';
+import { makeOrderRequest, payOrder } from '../requests';
 import { Product } from '../models/Product';
 import { UserData } from '../redux/userSlice';
 import { AppDispatch, RootState } from '../store/mainStore';
@@ -91,6 +91,8 @@ const PaymentForm = ({ totalPrice, cart, accessToken }: { totalPrice: number, ca
           console.log('Order successful:', orderResponse.data);
           navigate('/purchase/delivery/'+orderResponse.data.created_order_id);
           enqueueSnackbar('Zamówienie złożone pomyślnie (Nr zamówienia: '+orderResponse.data.created_order_id+')', { variant: 'success' });
+          const payResponse = await payOrder(accessToken, orderResponse.data.created_order_id);
+          enqueueSnackbar('Zamówienie nr '+ orderResponse.data.created_order_id + ' zostało opłacone!', { variant: 'success' });
         } else {
           console.error('Failed to make order:', orderResponse);
           enqueueSnackbar('Wystąpił błąd podczas składania zamówienia', { variant: 'error' });

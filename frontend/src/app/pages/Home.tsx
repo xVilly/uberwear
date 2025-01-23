@@ -79,6 +79,7 @@ const navigate = useNavigate();
       </div>
 
       <button
+        onClick={() => navigate("/offer")}
         className="bg-[#1E3A5F] text-white font-playfair py-8 px-16 rounded-full shadow-md text-3xl absolute"
         style={{
           fontFamily: "'Playfair Display', serif",

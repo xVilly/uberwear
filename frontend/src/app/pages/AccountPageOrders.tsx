@@ -5,6 +5,9 @@ import { RootState } from '../store/mainStore';
 import { UserData } from '../redux/userSlice';
 import { AccountSidebar } from './AccountSidebar';
 import { translateStatus } from './admin/AdminOrders';
+import { useNavigate } from 'react-router-dom';
+import { requestCancelOrder } from './admin/adminRequests';
+import { enqueueSnackbar } from 'notistack';
 
 interface Order {
   id: number;
@@ -23,18 +26,19 @@ interface Order {
 }
 
 export function AccountPageOrders({ userData }: { userData: UserData }) {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const data = await getOrdersByClient(userData.access, userData.clid);
-        setOrders(data);
-      } catch (error) {
-        console.error('Failed to fetch orders:', error);
-      }
-    };
+  const fetchOrders = async () => {
+    try {
+      const data = await getOrdersByClient(userData.access, userData.clid);
+      setOrders(data);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchOrders();
   }, [userData.access]);
 
@@ -61,17 +65,22 @@ export function AccountPageOrders({ userData }: { userData: UserData }) {
                 <h2 className="text-xl font-bold">Zamówienie nr {order.id}</h2>
                 <p className="text-sm text-gray-500">{translateStatus(order.status)}</p>
               </div>
-              <div className="flex-col text-right">
+              <div className="flex-col text-right justify-end content-end">
                 <p className="text-sm text-gray-500">Złożono {order.date}</p>
-                <div className="flex space-x-1">
-                  <p className="text-sm text-gray-500">Produkty:</p>
-                  <ul className="ml-5 list-disc">
+                <div className="flex justify-end">
+                  <ul className="list-none">
                     {order.products.map((product, idx) => (
                       <li key={idx} className="text-sm text-gray-500">
                         {product.product.name} - {product.ordered_amount} szt. - {product.product.price} PLN
                       </li>
                     ))}
                   </ul>
+                </div>
+                <div className="flex space-x-2 justify-end">
+                  <button onClick={() => {navigate(`/purchase/delivery/${order.id}`)}}
+                  className="p-1 mt-2 rounded-md text-center text-sm bg-emerald-400 border-emerald-700 text-white shadow-md hover:shadow-lg border hover:bg-emerald-500 hover:border-emerald-800 transition-all duration-200">
+                    Śledź postęp
+                  </button>
                 </div>
               </div>
             </div>

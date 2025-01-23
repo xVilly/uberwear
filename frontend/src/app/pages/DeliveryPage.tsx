@@ -55,7 +55,7 @@ function DeliveryPage({userData}: {userData: UserData}) {
 
         // Map specific `time` values to history steps
         if (newTime === 25) setHistoryIndex(1); // Step 2: "Odbieranie ubrań"
-        if (newTime === 50) setHistoryIndex(2); // Step 3: "Dostarczanie ubrań"
+        if (newTime === 75) setHistoryIndex(2); // Step 3: "Dostarczanie ubrań"
         if (newTime === 100) setHistoryIndex(3); // Step 4: "Kurier jest już u Ciebie!"
 
         return newTime;

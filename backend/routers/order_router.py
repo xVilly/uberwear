@@ -309,6 +309,10 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
         payment_method = input.payment_method
     )
 
+    new_status = "Pending"
+    if input.payment_method == "cash":
+        new_status = "Shipped"
+
     db.add(new_payment)
     db.commit()
     db.refresh(new_payment)
@@ -317,7 +321,7 @@ def make_order(input: OrderInput, db: Session = Depends(get_db), current_client:
     new_order = Order(
         order_date=datetime.now(),
         client_ID=current_client.client_ID,
-        status="Shipped",
+        status=new_status,
         courier_ID=courier.courier_ID,
         payment_ID=new_payment.payment_ID,
         address_ID=current_client.address_ID
@@ -359,8 +363,10 @@ def pay_order(order_id: int, db: Session = Depends(get_db), current_client: Clie
 
     db_payment.status = "Done"
 
-    if db_order.status != "Shipped":
+    if db_order.status != "Shipped" and db_order.status != "Delivered" and db_order.status != "Finalized":
         db_order.status = "Shipped"
+    if db_order.status == "Delivered":
+        db_order.status = "Finalized"
     db.commit()
 
     return {
@@ -436,7 +442,12 @@ def deliver_order(order_id: int, db: Session = Depends(get_db), current_user: Us
     if db_order.status != "Shipped":
         raise HTTPException(status_code=400, detail="Order not shipped yet")
     
-    db_order.status = "Delivered"
+    payment = db.query(Payment).filter(Payment.payment_ID == db_order.payment_ID).first()
+    if payment.status != "Done":
+        db_order.status = "Delivered"
+    else:
+        db_order.status = "Finalized"
+    
     db.commit()
 
     return {

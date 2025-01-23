@@ -339,11 +339,12 @@ export const getAllOrders = async () => {
   return response.json();
 };
 
-export const payOrder = async (orderId: string) => {
+export const payOrder = async (access: string, orderId: string) => {
   const response = await fetch(`http://localhost:8000/orders/${orderId}/pay`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
+      'Authorization': `Bearer ${access}`,
     },
   });
   return response.json();
