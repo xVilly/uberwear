@@ -306,11 +306,24 @@ export const getOrdersByClient = async (accessToken: string,client_id: string) =
   return response.json();
 };
 
-export const getOrdersByCourier = async (courierId: string) => {
+export const getCourierID = async (accessToken: string) => {
+  const response = await fetch('http://localhost:8000/user/me', {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  return data.courier;
+}
+
+export const getOrdersByCourier = async (accessToken:string,courierId: string) => {
   const response = await fetch(`http://localhost:8000/courier/${courierId}/orders`, {
     method: 'GET',
     headers: {
       'accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
     },
   });
   return response.json();
@@ -356,11 +369,12 @@ export const deleteOrder = async (orderId: string) => {
   return response.json();
 };
 
-export const deliverOrder = async (orderId: string) => {
+export const deliverOrder = async (accessToken:string,orderId: number) => {
   const response = await fetch(`http://localhost:8000/orders/${orderId}/deliver`, {
     method: 'PATCH',
     headers: {
       'accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
     },
   });
   return response.json();

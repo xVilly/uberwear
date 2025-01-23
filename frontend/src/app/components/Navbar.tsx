@@ -29,6 +29,7 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
             email: '',
             clid: '',
             loyalty_points: '',
+            coid: '',
         });
         navigate('/');
         enqueueSnackbar('Wylogowano pomyślnie', { variant: 'success' });
@@ -98,11 +99,15 @@ function Navbar({ userData, setUserData, isSidebarExpanded, setIsSidebarExpanded
                 {!isCartPage && (
                     <div
                         className="font-light text-2xl cursor-pointer"
-                        onClick={() =>
-                            userData.type === 'Admin'
-                                ? navigate('/admin')
-                                : navigate('/account/data')
-                        }
+                        onClick={() => {
+                            if (userData.type === 'Admin') {
+                                navigate('/admin');
+                            } else if (userData.type === 'Courier') {
+                                navigate('/courier');
+                            } else {
+                                navigate('/account/data');
+                            }
+                        }}
                     >
                         Witaj, {userData.name}
                     </div>

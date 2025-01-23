@@ -14,7 +14,8 @@ import AdminClients from "./pages/admin/AdminClients";
 import { AboutPage } from "./pages/AboutPage";
 import { ContactPage } from "./pages/ContactPage";
 import { RegisterShopPage } from "./pages/RegisterShopPage";
-import { CourierPanelPage } from "./pages/CourierPanel";
+import CourierPanelPage  from "./pages/CourierPanel";
+
 
 import PaymentPage from "./pages/PaymentPage";
 import DeliveryPage from "./pages/DeliveryPage";
@@ -54,7 +55,7 @@ const routes = createBrowserRouter(
         <Route path=":shopId/category/:category" element={<CategoryPage />} />
         <Route path=":shopId/category/:category/color/:color/purchase" element={<ProductPage />} />
       </Route>
-
+      <Route path="courier" element={<CourierPanelPage/>} />
       <Route path="create-account" element={<CreateAccountPage/>} />
       <Route path="account/data" element={<AccountPageData/>} />
       <Route path="account/orders" element={<AccountPageOrders/>} />
@@ -62,7 +63,8 @@ const routes = createBrowserRouter(
       <Route path="account/favbrands" element={<AccountPageFavBrands/>} />
       <Route path="login" element={<LogInPage/>} />
       <Route path="cart" element={<CartPage/>} />
-      <Route path="courier" element={<CourierPanelPage />} />
+      
+     
       <Route path="admin/data" element={<AdminData />} />
       <Route path="about" element={<AboutPage />} />
       <Route path="contact" element={<ContactPage />} />

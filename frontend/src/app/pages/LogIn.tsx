@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginRequest, getUserInfo, getClientID,getLoyaltyPoints } from '../requests';
+import { loginRequest, getUserInfo, getClientID,getLoyaltyPoints,getCourierID } from '../requests';
 import { AppDispatch, RootState } from '../store/mainStore';
 import { setUserDataThunk, UserData } from '../redux/userSlice';
 import { enqueueSnackbar } from 'notistack';
@@ -30,6 +30,7 @@ function LogInPage({userData, setUserData}: Props) {
         const userInfo = await getUserInfo(data.access_token);
         const clientID = await getClientID(data.access_token);
         const LoyalityPoints =await getLoyaltyPoints(data.access_token);
+        const courierID = await getCourierID(data.access_token);
         
         setUserData({
           type: userInfo.user.user_type,
@@ -39,6 +40,7 @@ function LogInPage({userData, setUserData}: Props) {
           access: data.access_token,
           clid: clientID,
           loyalty_points: LoyalityPoints,
+          coid: courierID,
         });
         clearCart();
 

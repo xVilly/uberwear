@@ -11,6 +11,7 @@ export interface UserData {
   email: string;
   clid : string;
   loyalty_points: string;
+  coid: string;
 }
 
 const userSlice = createSlice({
@@ -19,6 +20,7 @@ const userSlice = createSlice({
     accessToken: (typeof document !== 'undefined' ? localStorage.getItem('accessToken') : ""),
     clientID: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
     loyaltyPoints: (typeof document !== 'undefined' ? parseCookie('loyalty_points') : ""),
+    courierID: (typeof document !== 'undefined' ? parseCookie('courier_id') : ""),
     user: {
       access: (typeof document !== 'undefined' ? parseCookie('accessToken') : ""),
       type: (typeof document !== 'undefined' ? parseCookie('userType') : ""),
@@ -27,6 +29,7 @@ const userSlice = createSlice({
       email: (typeof document !== 'undefined' ? parseCookie('userEmail') : ""),
       clid: (typeof document !== 'undefined' ? parseCookie('client_id') : ""),
       loyalty_points: (typeof document !== 'undefined' ? parseCookie('loyalty_points') : ""),
+      coid: (typeof document !== 'undefined' ? parseCookie('courier_id') : ""),
 
      
     },
@@ -43,11 +46,14 @@ const userSlice = createSlice({
     },
     setLoyaltyPoints(state, action: PayloadAction<string>) {
       state.loyaltyPoints = action.payload;
+    },
+    setCourierID(state, action: PayloadAction<string>) {
+      state.courierID = action.payload;
     }
   },
 });
 
-export const { setUserData, setAccessToken, setClientID,setLoyaltyPoints } = userSlice.actions;
+export const { setUserData, setAccessToken, setClientID,setLoyaltyPoints,setCourierID } = userSlice.actions;
 
 export default userSlice.reducer;
 
@@ -63,6 +69,7 @@ export function setUserDataThunk(
     document.cookie = `userEmail=${data.email}; SameSite=Strict; Secure; path=/`;
     document.cookie = `client_id=${data.clid}; SameSite=Strict; Secure; path=/`;
     document.cookie = `loyalty_points=${data.loyalty_points}; SameSite=Strict; Secure; path=/`;
+    document.cookie = `courier_id=${data.coid}; SameSite=Strict; Secure; path=/`;
     dispatch(setUserData(data));
   };
 }
@@ -90,5 +97,13 @@ export function setLoyaltyPointsThunk(
   return async function setPointsThunk(dispatch) {
     localStorage.setItem('loyaltyPoints', points);
     dispatch(setLoyaltyPoints(points));
+  };
+}
+export function setCourierIDThunk(
+  id: string,
+): ThunkAction<void, RootState, unknown, Action> {
+  return async function setIDThunk(dispatch) {
+    localStorage.setItem('courierID', id);
+    dispatch(setCourierID(id));
   };
 }

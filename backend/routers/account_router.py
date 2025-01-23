@@ -9,7 +9,7 @@ from utils.config import cfg
 from utils.database import get_db
 from models.tables.user import User, UserType
 from utils.auth import (
-    authenticate_user, create_access_token, get_admin, get_current_active_user, get_current_active_admin, get_password_hash, get_client
+    authenticate_user, create_access_token, get_admin, get_current_active_user, get_current_active_admin, get_password_hash, get_client, get_courier
 )
 from pydantic import BaseModel
 
@@ -159,6 +159,8 @@ def current_user(db: Session = Depends(get_db), user: User = Depends(get_current
         return_data["loyalty_points"] = get_client(db, user.user_ID).loyalty_points
     if user.user_type == UserType.Admin:
         return_data["admin"] = get_admin(db, user.user_ID)
+    if user.user_type == UserType.Courier:
+        return_data["courier"] = get_courier(db, user.user_ID).courier_ID
     return return_data
 
 
