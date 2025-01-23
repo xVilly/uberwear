@@ -61,7 +61,7 @@ export function CartPage() {
       {cart.length > 0 && (
         <button
           className="mt-5 bg-amber-500 text-[#1E3A5F] p-4 rounded outline outline-3 outline-[#1E3A5F] cursor-pointer font-bold text-xl transition-all duration-200 hover:scale-105"
-          onClick={() => navigate('/purchase/filladdress', { state: { cart, totalPrice } })}
+          onClick={() => navigate('/purchase/payment', { state: { cart, totalPrice } })}
         >
           Przejdź do kasy
         </button>

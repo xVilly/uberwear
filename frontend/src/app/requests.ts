@@ -53,6 +53,24 @@ export const createAccount = async (
   return { status, data };
 };
 
+export const makeOrderRequest = async (accessToken: string,
+  products: {id: number, count: number}[],
+  payment_method: string 
+) => {
+  const response = await fetch('http://localhost:8000/orders', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ products, payment_method }),
+  });
+  const status = response.status;
+  const data = await response.json();
+  return { status, data };
+};
+
 export const getUserInfo = async (accessToken: string) => {
   const response = await fetch('http://localhost:8000/user/me', {
     method: 'GET',
@@ -265,6 +283,17 @@ export const addProduct = async (shopId: string, productData: any) => {
   return response.json();
 };
 
+export const getOrderById = async (accessToken: string,orderId: string) => {
+  const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
+  return response.json();
+};
+
 // Order
 export const getOrdersByClient = async (accessToken: string,client_id: string) => {
   const response = await fetch(`http://localhost:8000/client/${client_id}/orders`, {
@@ -293,18 +322,6 @@ export const getAllOrders = async () => {
     headers: {
       'accept': 'application/json',
     },
-  });
-  return response.json();
-};
-
-export const makeOrder = async (orderData: any) => {
-  const response = await fetch('http://localhost:8000/orders', {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(orderData),
   });
   return response.json();
 };

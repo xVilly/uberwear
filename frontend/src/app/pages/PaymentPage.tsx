@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from './CartContext';
+import { makeOrderRequest } from '../requests';
+import { Product } from '../models/Product';
+import { UserData } from '../redux/userSlice';
+import { AppDispatch, RootState } from '../store/mainStore';
+import { connect } from 'react-redux';
+import { enqueueSnackbar } from 'notistack';
 
-const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
+const PaymentForm = ({ totalPrice, cart, accessToken }: { totalPrice: number, cart: Product[], accessToken: string }) => {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'blik' | 'cash'>('card');
   const [paymentInfo, setPaymentInfo] = useState({
@@ -61,18 +67,38 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
     if (paymentInfo.blikCode) {
       return paymentInfo.blikCode.length === 6;
     }
+    if (paymentMethod === 'cash') {
+      return true;
+    }
     return false;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Payment information submitted:', paymentInfo);
-    // You can add further logic for submitting payment
+    await handleClick();
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (isPaymentValid()) {
-      navigate('/purchase/delivery');
+      try {
+        const products = cart.map(product => ({
+          id: product.product_ID,
+          count: 1,
+        }));
+        const orderResponse = await makeOrderRequest(accessToken, products, paymentMethod);
+        if (orderResponse.status === 200) {
+          console.log('Order successful:', orderResponse.data);
+          navigate('/purchase/delivery/'+orderResponse.data.created_order_id);
+          enqueueSnackbar('Zamówienie złożone pomyślnie (Nr zamówienia: '+orderResponse.data.created_order_id+')', { variant: 'success' });
+        } else {
+          console.error('Failed to make order:', orderResponse);
+          enqueueSnackbar('Wystąpił błąd podczas składania zamówienia', { variant: 'error' });
+        }
+      } catch (error) {
+        console.error('Failed to make order:', error);
+        enqueueSnackbar('Wystąpił błąd podczas składania zamówienia', { variant: 'error' });
+      }
     }
   };
   const isBlikValid = (): boolean => paymentInfo.blikCode.length === 6; // Example: BLIK code is 6 digits
@@ -253,7 +279,6 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
           fontWeight: 'bold',
           fontSize: '1.2rem',
         }}
-        onClick={handleClick}
         disabled={!((paymentMethod === 'card' && isCardPaymentValid()) || (paymentMethod === 'blik' && isBlikValid()) || paymentMethod === 'cash')}
       >
         {paymentMethod === 'cash' ? 'Przejdź do dostawy' : 'Przejdź do płatności'}
@@ -263,10 +288,9 @@ const PaymentForm = ({ totalPrice }: { totalPrice: number }) => {
   );
 };
 
-export function PaymentPage() {
+function PaymentPage({userData}: {userData: UserData}) {
   const location = useLocation();
-  const { cart } = useCart();
-  const totalPrice = location.state?.totalPrice || 0;
+  const { cart, getTotalPrice } = useCart();
 
   return (
     <div
@@ -297,7 +321,7 @@ export function PaymentPage() {
       <div style={{ marginBottom: '20px' }}>
       </div>
 
-      <PaymentForm totalPrice={totalPrice} />
+      <PaymentForm totalPrice={getTotalPrice()} cart={cart} accessToken={userData.access} />
 
 
       {/* Cart Summary */}
@@ -347,10 +371,14 @@ export function PaymentPage() {
             ))}
           </div>
           <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '15px' }}>
-            Całkowita cena: {totalPrice} zł
+            Całkowita cena: {getTotalPrice()} zł
           </h3>
         </div>
       </div>
     </div>
   );
 }
+
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
+
+export default connect(mapStateToProps)(PaymentPage);

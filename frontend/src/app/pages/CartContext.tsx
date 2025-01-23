@@ -6,6 +6,7 @@ type CartContextType = {
   addToCart: (item: Product) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
+  getTotalPrice: () => number;
 };
 
 // Define the CartProviderProps to explicitly type `children`
@@ -43,8 +44,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     setCart((prevCart) => prevCart.filter(product => product.product_ID !== id));
   };
 
+  const getTotalPrice = () => {
+    return cart.reduce((acc, item) => acc + item.price, 0);
+  }
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart}}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, getTotalPrice }}>
       {children}
     </CartContext.Provider>
   );

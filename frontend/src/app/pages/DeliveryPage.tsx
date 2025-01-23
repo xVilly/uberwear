@@ -1,15 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import krakowMap from '../clothes/background_jeans.png'; // Adjust the relative path
+import { useParams } from 'react-router-dom';
+import { Order } from '../models/Order';
+import { getOrderById } from '../requests';
+import { UserData } from '../redux/userSlice';
+import { connect } from 'react-redux';
+import { RootState } from '../store/mainStore';
 
-export function DeliveryPage() {
+function DeliveryPage({userData}: {userData: UserData}) {
+  const { orderId } = useParams<{ orderId: string }>();
+
   const [time, setTime] = useState(0); // Time simulation state
   const [historyIndex, setHistoryIndex] = useState(0); // Tracks the current courier status
 
+  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+      const fetchOrder = async () => {
+          try {
+              const orderData: Order = await getOrderById(userData.access, orderId?.toString() ?? '');
+              setCurrentOrder(orderData);
+          } catch (error) {
+              console.error('Failed to fetch order:', error);
+          }
+      };
+
+      fetchOrder();
+  }, []);
+
   const historySteps = [
-    "W drodze po ubrania", // On way to pick up clothes
-    "Odbieranie ubrań",    // Picking up clothes
-    "Dostarczanie ubrań",  // Delivering clothes
-    "Kurier jest już u Ciebie!", // Clothes delivered
+    "Przetwarzanie zamówienia", // On way to pick up clothes
+    "Kurier jest w drodze",    // Picking up clothes
+    "Finalizacja zamówienia",  // Delivering clothes
+    "Ubrania zostały dostarczone!", // Clothes delivered
   ];
 
   useEffect(() => {
@@ -20,7 +43,15 @@ export function DeliveryPage() {
           return prevTime;
         }
 
-        const newTime = prevTime + 1; // Increment time slower (every 300ms)
+        var maxTime = 25;
+        if (currentOrder && currentOrder.status === 'Shipped') {
+          maxTime = 50;
+        } else if (currentOrder && currentOrder.status === 'Delivered') {
+          maxTime = 75;
+        } else if (currentOrder && currentOrder.status === 'Finalized') {
+          maxTime = 100;
+        }
+        const newTime = Math.min(prevTime + 1, maxTime); // Increment time slower (every 300ms)
 
         // Map specific `time` values to history steps
         if (newTime === 25) setHistoryIndex(1); // Step 2: "Odbieranie ubrań"
@@ -29,10 +60,10 @@ export function DeliveryPage() {
 
         return newTime;
       });
-    }, 300); // (300ms per increment)
+    }, 20); // (20ms per increment)
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentOrder]);
 
   return (
     <div
@@ -48,7 +79,7 @@ export function DeliveryPage() {
       {/* Background Image Container */}
       <div
         style={{
-          height: '50vh', 
+          height: '50vh',
           width: '100%',
           backgroundImage: `url(${krakowMap})`,
           backgroundSize: 'cover', // Cover the container while maintaining aspect ratio
@@ -99,16 +130,16 @@ export function DeliveryPage() {
           </span>
         </div>
         <div
-    style={{
-      marginTop: '-90px',
-      fontSize: '2.6rem',
-      fontWeight: 'bold',
-      color: '#1E3A5F',
-      textAlign: 'center',
-    }}
-  >
-    Twoje zamówienie jest w drodze!
-  </div>
+          style={{
+            marginTop: '-90px',
+            fontSize: '2.6rem',
+            fontWeight: 'bold',
+            color: '#1E3A5F',
+            textAlign: 'center',
+          }}
+        >
+          Twoje zamówienie jest w drodze!
+        </div>
         {/* Courier History */}
         <div
           style={{
@@ -144,26 +175,29 @@ export function DeliveryPage() {
           </ul>
           {/* button show after 100% completion */}
           {time === 100 && (
-          <button
-            onClick={() => alert('Odbiór potwierdzony!')} 
-            style={{
-              marginTop: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#FFBF00',
-              color: '',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-            }}
-          >
-            Potwierdź odbiór
-          </button>
-        )}
+            <button
+              onClick={() => alert('Odbiór potwierdzony!')}
+              style={{
+                marginTop: '20px',
+                padding: '10px 20px',
+                backgroundColor: '#FFBF00',
+                color: '',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+              }}
+            >
+              Potwierdź odbiór
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
+const mapStateToProps = (state: RootState) => ({ userData: state.user.user });
+
+export default connect(mapStateToProps)(DeliveryPage);

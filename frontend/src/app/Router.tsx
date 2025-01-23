@@ -16,9 +16,8 @@ import { ContactPage } from "./pages/ContactPage";
 import { RegisterShopPage } from "./pages/RegisterShopPage";
 import { CourierPanelPage } from "./pages/CourierPanel";
 
-import { AddressFillingPage } from "./pages/AddressFillPage";
-import { PaymentPage } from "./pages/PaymentPage";
-import { DeliveryPage } from "./pages/DeliveryPage";
+import PaymentPage from "./pages/PaymentPage";
+import DeliveryPage from "./pages/DeliveryPage";
 import LogInPage from "./pages/LogIn";
 import AdminData from "./pages/admin/AdminData";
 import AccountPageData from "./pages/AccountPageData";
@@ -68,9 +67,8 @@ const routes = createBrowserRouter(
       <Route path="about" element={<AboutPage />} />
       <Route path="contact" element={<ContactPage />} />
       <Route path="register-shop" element={<RegisterShopPage />} />
-      <Route path="/purchase/filladdress" element={<AddressFillingPage />} />
       <Route path="/purchase/payment" element={<PaymentPage />} />
-      <Route path="/purchase/delivery" element={<DeliveryPage />} />
+      <Route path="/purchase/delivery/:orderId" element={<DeliveryPage />} />
     </Route>
   )
 );
