@@ -35,7 +35,7 @@ export function AccountPagePoints({ userData }: { userData: UserData }) {
       <ul>
          
             <li className="mb-5 p-4 bg-white shadow-md rounded-md">
-              <div className="text-lg">Ilość punktów, które posidasz: {points}</div>
+              <div className="text-lg">Ilość punktów, które posiadasz: {points}</div>
             </li>
           
         </ul>

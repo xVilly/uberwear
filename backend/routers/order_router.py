@@ -366,6 +366,9 @@ def pay_order(order_id: int, db: Session = Depends(get_db), current_client: Clie
     if db_order.status != "Shipped" and db_order.status != "Delivered" and db_order.status != "Finalized":
         db_order.status = "Shipped"
     if db_order.status == "Delivered":
+        # add loyalty points
+        db_client = db.query(Client).filter(Client.client_ID == db_order.client_ID).first()
+        db_client.loyalty_points += db_payment.price // 10
         db_order.status = "Finalized"
     db.commit()
 
@@ -446,6 +449,9 @@ def deliver_order(order_id: int, db: Session = Depends(get_db), current_user: Us
     if payment.status != "Done":
         db_order.status = "Delivered"
     else:
+        # add loyalty points
+        db_client = db.query(Client).filter(Client.client_ID == db_order.client_ID).first()
+        db_client.loyalty_points += payment.price // 10
         db_order.status = "Finalized"
     
     db.commit()
